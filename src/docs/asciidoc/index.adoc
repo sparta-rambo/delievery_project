@@ -1,0 +1,16 @@
+= API Documentation
+:toc: left
+
+== User API
+
+=== Get User
+Retrieve a user by ID.
+
+include::{snippets}/get-user/http-request.adoc[]
+include::{snippets}/get-user/http-response.adoc[]
+
+=== Create User
+Create a new user.
+
+include::{snippets}/create-user/http-request.adoc[]
+include::{snippets}/create-user/http-response.adoc[]
