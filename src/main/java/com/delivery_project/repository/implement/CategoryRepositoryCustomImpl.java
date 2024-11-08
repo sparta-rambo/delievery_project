@@ -6,7 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CategoryRepositoryCustomImpl {
+public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -17,14 +17,5 @@ public class CategoryRepositoryCustomImpl {
         this.entityManager = entityManager;
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
-
-
-//    @Override
-//    public Optional<TestEntity> fetchByEntityId(Integer id) {
-//        QTestEntity testEntity = QTestEntity.testEntity;
-//        return Optional.ofNullable(queryFactory.selectFrom(testEntity)
-//            .where(testEntity.id.eq(id))
-//            .fetchOne());
-//    }
 
 }
