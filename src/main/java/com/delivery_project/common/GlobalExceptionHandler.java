@@ -1,6 +1,7 @@
 package com.delivery_project.common;
 
 import com.delivery_project.dto.response.MessageResponseDto;
+import com.delivery_project.exception.DuplicateCategoryNameException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageResponseDto> handleClassCastException(ClassCastException classCastException){
         MessageResponseDto errorResponse = new MessageResponseDto(classCastException.getMessage());
         return ResponseEntity.ok().body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicateCategoryNameException.class)
+    public ResponseEntity<String> handleDuplicateCategoryName(DuplicateCategoryNameException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
