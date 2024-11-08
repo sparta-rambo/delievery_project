@@ -1,24 +1,24 @@
 package com.delivery_project.controller.api;
 
 import com.delivery_project.dto.request.TestRequestDto;
-import com.delivery_project.entity.TestEntity;
-import com.delivery_project.service.TestService;
+import com.delivery_project.dto.response.MessageResponseDto;
+import com.delivery_project.enums.SuccessMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class TestRestController {
 
-    private final TestService testService;
-
-    @PostMapping
+    @PostMapping("/test")
     public ResponseEntity<?> createTest(@RequestBody TestRequestDto.Create testRequestDto) {
-        testService.save(new TestEntity(testRequestDto));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+//        testService.save(new TestEntity(testRequestDto));
+        return ResponseEntity.ok().body(new MessageResponseDto("test" + SuccessMessage.CREATE.getMessage()));
     }
 
 }

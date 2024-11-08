@@ -2,7 +2,6 @@ package com.delivery_project.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -26,20 +25,11 @@ public class Order {
     @Column(nullable = false, length = 20)
     private String status;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private Double totalPrice;
+    @Column(nullable = false)
+    private int totalPrice;
 
     @Column(nullable = false, length = 255)
     private String deliveryAddress;
 
-    private String deliveryRequest;
-    private LocalDateTime createdAt;
-    private String createdBy;
-    private LocalDateTime updatedAt;
-    private String updatedBy;
-    private LocalDateTime deletedAt;
-    private String deletedBy;
-
-    // Getters and Setters
 }
 
