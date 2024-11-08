@@ -2,6 +2,8 @@ package com.delivery_project.entity;
 
 import com.delivery_project.dto.request.TestRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "p_test_entity")
+@Builder
+@AllArgsConstructor
 public class TestEntity {
 
     @Id

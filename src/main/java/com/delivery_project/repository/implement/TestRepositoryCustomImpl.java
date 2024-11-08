@@ -2,11 +2,9 @@ package com.delivery_project.repository.implement;
 
 import com.delivery_project.entity.QTestEntity;
 import com.delivery_project.entity.TestEntity;
-import com.delivery_project.repository.interfaces.TestRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -25,21 +23,13 @@ public class TestRepositoryCustomImpl implements TestRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
+
     @Override
-    public Optional<TestEntity> asd(Integer id) {
-        return Optional.empty();
+    public Optional<TestEntity> fetchByEntityId(Integer id) {
+        QTestEntity testEntity = QTestEntity.testEntity;
+        return Optional.ofNullable(queryFactory.selectFrom(testEntity)
+                .where(testEntity.id.eq(id))
+                .fetchOne());
     }
 
-//    @Override
-//    public Optional<TestEntity> fetchByEntityId(Integer id) {
-//        QTestEntity testEntity = QTestEntity.testEntity;
-//        return Optional.ofNullable(queryFactory.selectFrom(testEntity)
-//                .where(testEntity.id.eq(id))
-//                .fetchOne());
-//    }
-
-//    @Override
-//    public void addTestEntity(TestEntity testEntity) {
-//        entityManager.persist(testEntity); // EntityManager를 통해 저장
-//    }
 }

@@ -1,7 +1,6 @@
 package com.delivery_project.service;
 
 import com.delivery_project.entity.TestEntity;
-import com.delivery_project.repository.interfaces.TestRepositoryCustom;
 import com.delivery_project.repository.jpa.TestRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,8 @@ public class TestService {
 
     private final TestRepository testRepository;
 
-//    public void save(TestEntity testEntity) {
-//        testRepository.addTestEntity(testEntity);
-//    }
+    public TestEntity getById(Integer id) {
+        return testRepository.fetchByEntityId(id).orElseThrow(()-> new NullPointerException("Entity not found"));
+    }
 
 }
