@@ -17,7 +17,6 @@ import java.util.UUID;
 @Builder
 public class User extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     @Column(nullable = false, unique = true, length = 50)

@@ -1,6 +1,6 @@
 package com.delivery_project.service;
 
-import com.delivery_project.dto.SignupRequestDto;
+import com.delivery_project.dto.request.SignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

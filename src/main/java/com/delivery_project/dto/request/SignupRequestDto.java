@@ -1,4 +1,4 @@
-package com.delivery_project.dto;
+package com.delivery_project.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
