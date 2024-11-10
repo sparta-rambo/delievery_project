@@ -2,11 +2,11 @@ package com.delivery_project.controller.api;
 
 import com.delivery_project.dto.request.OrderRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
-import com.delivery_project.entity.Order;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +25,8 @@ public class OrderRestController {
         //security
         User user = new User();
 
-        orderService.createOrder(orderRequestDto,user);
+        orderService.createOrder(orderRequestDto, user);
 
-        return ResponseEntity.ok(new MessageResponseDto("Order" + SuccessMessage.CREATE.getMessage()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponseDto("Order" + SuccessMessage.CREATE.getMessage()));
     }
 }
