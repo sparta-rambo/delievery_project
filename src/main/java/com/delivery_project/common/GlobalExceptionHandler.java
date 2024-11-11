@@ -1,5 +1,6 @@
 package com.delivery_project.common;
 
+import com.delivery_project.common.exception.BadRequestException;
 import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.response.MessageResponseDto;
 import org.springframework.http.HttpStatus;
@@ -29,4 +30,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<MessageResponseDto> handleBadRequestException(BadRequestException ex) {
+        MessageResponseDto errorResponse = new MessageResponseDto(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 }
