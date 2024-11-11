@@ -5,10 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SignupRequestDto {
+public class SigninRequestDto {
     private String username;
     private String password;
-    private String address;
-    private boolean manager = false;
-    private String managerToken = "";
 }

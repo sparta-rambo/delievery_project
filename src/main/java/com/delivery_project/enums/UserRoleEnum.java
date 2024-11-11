@@ -1,5 +1,10 @@
 package com.delivery_project.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum UserRoleEnum {
     CUSTOMER(Authority.CUSTOMER),
     OWNER(Authority.OWNER),
@@ -7,10 +12,6 @@ public enum UserRoleEnum {
     MASTER(Authority.MASTER);
 
     private final String authority;
-
-    UserRoleEnum(String authority) {
-        this.authority = authority;
-    }
 
     public String getAuthority() {
         return this.authority;
