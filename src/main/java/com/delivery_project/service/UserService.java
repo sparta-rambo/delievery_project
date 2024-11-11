@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +42,15 @@ public class UserService {
             role = UserRoleEnum.MANAGER;
         }
 
-        User user = new User(username, password, address, role);
-        userRepository.save(user);
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .username(username)
+                .password(password)
+                .address(address)
+                .role(role)
+                .build();
 
-        //System.out.println("Username: " + username);
+        userRepository.save(user);
 
     }
 }

@@ -19,23 +19,16 @@ public class User extends Timestamped{
     @Id
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
     @Column(nullable = false, length = 255)
     private String address;
-
-    public User(String username, String password, String address, UserRoleEnum role) {
-        this.username = username;
-        this.password = password;
-        this.address = address;
-        this.role = role;
-    }
 }
