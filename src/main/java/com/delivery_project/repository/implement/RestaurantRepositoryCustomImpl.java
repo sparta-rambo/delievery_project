@@ -18,12 +18,4 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-//    @Override
-//    public Optional<TestEntity> fetchByEntityId(Integer id) {
-//        QTestEntity testEntity = QTestEntity.testEntity;
-//        return Optional.ofNullable(queryFactory.selectFrom(testEntity)
-//            .where(testEntity.id.eq(id))
-//            .fetchOne());
-//    }
-
 }
