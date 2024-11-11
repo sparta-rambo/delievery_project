@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<MessageResponseDto> handleIllegalException(RuntimeException runtimeException) {
-        return ResponseEntity.badRequest().body(new MessageResponseDto(runtimeException.getMessage()));
+    public ResponseEntity<MessageResponseDto> handleIllegalException(
+        RuntimeException runtimeException) {
+        return ResponseEntity.badRequest()
+            .body(new MessageResponseDto(runtimeException.getMessage()));
     }
 
     @ExceptionHandler(ClassCastException.class)
-    public ResponseEntity<MessageResponseDto> handleClassCastException(ClassCastException classCastException){
+    public ResponseEntity<MessageResponseDto> handleClassCastException(
+        ClassCastException classCastException) {
         MessageResponseDto errorResponse = new MessageResponseDto(classCastException.getMessage());
         return ResponseEntity.ok().body(errorResponse);
     }
