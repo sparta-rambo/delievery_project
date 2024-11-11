@@ -80,3 +80,10 @@ tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+bootJar {
+    dependsOn asciidoctor // bootJar 태스크가 asciidoctor 태스크 이후에 실행되도록 설정
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs' // JAR 파일 내의 `static/docs` 폴더에 Asciidoctor 문서 포함
+    }
+}
