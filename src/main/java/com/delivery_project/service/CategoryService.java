@@ -1,10 +1,10 @@
 package com.delivery_project.service;
 
+import com.delivery_project.common.exception.DuplicateResourceException;
+import com.delivery_project.common.exception.InvalidInputException;
+import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.response.CategoryResponseDto;
 import com.delivery_project.entity.Category;
-import com.delivery_project.exception.category.DuplicateCategoryNameException;
-import com.delivery_project.exception.category.InvalidCategoryNameException;
-import com.delivery_project.exception.category.NoCategoryFoundException;
 import com.delivery_project.repository.jpa.CategoryRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -22,11 +22,11 @@ public class CategoryService {
 
     public void addCategory(String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
-            throw new DuplicateCategoryNameException("이미 존재하는 카테고리 이름입니다.");
+            throw new DuplicateResourceException("이미 존재하는 카테고리 이름입니다.");
         }
 
         if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new InvalidCategoryNameException("카테고리 이름은 비어있을 수 없습니다.");
+            throw new InvalidInputException("카테고리 이름은 비어있을 수 없습니다.");
         }
 
         // 카테고리 객체 생성 후 저장
@@ -40,11 +40,11 @@ public class CategoryService {
 
     public void updateCategory(UUID categoryId, String categoryName) {
         if (categoryRepository.existsByName(categoryName)) {
-            throw new DuplicateCategoryNameException("이미 존재하는 카테고리 이름입니다.");
+            throw new DuplicateResourceException("이미 존재하는 카테고리 이름입니다.");
         }
 
         if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new InvalidCategoryNameException("카테고리 이름은 비어있을 수 없습니다.");
+            throw new InvalidInputException("카테고리 이름은 비어있을 수 없습니다.");
         }
 
         Category category = categoryRepository.findById(categoryId)
@@ -60,7 +60,7 @@ public class CategoryService {
         List<Category> categoryList = categoryRepository.findAll();
 
         if (categoryList.isEmpty()) {
-            throw new NoCategoryFoundException("카테고리 데이터가 없습니다.");
+            throw new ResourceNotFoundException("카테고리 데이터가 없습니다.");
         }
 
         List<CategoryResponseDto> categoryResponseDtoList = categoryList.stream()
