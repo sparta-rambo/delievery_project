@@ -1,5 +1,7 @@
 package com.delivery_project.common;
 
+import com.delivery_project.common.exception.DuplicateResourceException;
+import com.delivery_project.common.exception.InvalidInputException;
 import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.response.MessageResponseDto;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<MessageResponseDto> handleDuplicateResourceException(DuplicateResourceException e) {
+        return ResponseEntity.badRequest().body(new MessageResponseDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<MessageResponseDto> handleInvalidInputException(InvalidInputException e) {
+        return ResponseEntity.badRequest().body(new MessageResponseDto(e.getMessage()));
     }
 
 }

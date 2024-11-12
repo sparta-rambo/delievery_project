@@ -24,6 +24,8 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final StringPath deliveryAddress = createString("deliveryAddress");
 
+    public final StringPath deliveryRequest = createString("deliveryRequest");
+
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
     public final StringPath orderType = createString("orderType");
