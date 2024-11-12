@@ -22,9 +22,23 @@ public class QRestaurant extends EntityPathBase<Restaurant> {
 
     public static final QRestaurant restaurant = new QRestaurant("restaurant");
 
+    public final QTimestamped _super = new QTimestamped(this);
+
     public final StringPath address = createString("address");
 
     public final QCategory category;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    //inherited
+    public final StringPath deletedBy = _super.deletedBy;
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
@@ -33,6 +47,12 @@ public class QRestaurant extends EntityPathBase<Restaurant> {
     public final StringPath name = createString("name");
 
     public final QUser owner;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    //inherited
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QRestaurant(String variable) {
         this(Restaurant.class, forVariable(variable), INITS);

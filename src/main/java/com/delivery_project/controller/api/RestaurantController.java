@@ -1,17 +1,16 @@
 package com.delivery_project.controller.api;
 
-import com.delivery_project.common.exception.ResourceNotFoundException;
+import com.delivery_project.common.utils.PageRequestUtils;
 import com.delivery_project.dto.request.RestaurantRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.dto.response.RestaurantResponseDto;
-import com.delivery_project.entity.Category;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.service.RestaurantService;
-import java.util.List;
 import java.util.UUID;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -85,8 +85,26 @@ public class RestaurantController {
         return restaurantService.getRestaurant(restaurantId);
     }
 
-//    @GetMapping()
-//    public List<RestaurantResponseDto> getRestaurants() {
-//
-//    }
+    @GetMapping()
+    public Page<RestaurantResponseDto> getRestaurants(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortProperty,
+        @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        PageRequest pageRequest = PageRequestUtils.getPageRequest(page, size, sortProperty, ascending);
+        return restaurantService.getRestaurants(pageRequest);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public Page<RestaurantResponseDto> getRestaurantsByCategory(
+        @PathVariable UUID categoryId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortProperty,
+        @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        PageRequest pageRequest = PageRequestUtils.getPageRequest(page, size, sortProperty, ascending);
+        return restaurantService.getRestaurantsByCategory(pageRequest, categoryId);
+    }
 }

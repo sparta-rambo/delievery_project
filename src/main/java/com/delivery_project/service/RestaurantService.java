@@ -5,12 +5,18 @@ import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.request.RestaurantRequestDto;
 import com.delivery_project.dto.response.RestaurantResponseDto;
 import com.delivery_project.entity.Category;
+import com.delivery_project.entity.QRestaurant;
 import com.delivery_project.entity.Restaurant;
 import com.delivery_project.entity.User;
 import com.delivery_project.repository.jpa.CategoryRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +27,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final CategoryRepository categoryRepository;
+    private final QRestaurant qRestaurant = QRestaurant.restaurant;
 
     private Restaurant findRestaurantByIdOrThrow(UUID restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
@@ -128,5 +135,49 @@ public class RestaurantService {
             .address(restaurant.getAddress())
             .isHidden(restaurant.getIsHidden())
             .build();
+    }
+
+    public Page<RestaurantResponseDto> getRestaurants(PageRequest pageRequest) {
+        // Querydsl로 조건을 생성 (숨겨진 가게 제외)
+        BooleanExpression predicate = qRestaurant.isHidden.isFalse();
+
+        // Querydsl 페이징 적용
+        List<Restaurant> restaurants = restaurantRepository.findRestaurants(predicate, pageRequest);
+
+        // DTO로 변환
+        List<RestaurantResponseDto> restaurantResponseDtos = restaurants.stream()
+            .map(restaurant -> RestaurantResponseDto.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .categoryId(restaurant.getCategory().getId())
+                .ownerId(restaurant.getOwner().getId())
+                .address(restaurant.getAddress())
+                .isHidden(restaurant.getIsHidden())
+                .build())
+            .toList();
+
+        return new PageImpl<>(restaurantResponseDtos, pageRequest, restaurants.size());
+    }
+
+    public Page<RestaurantResponseDto> getRestaurantsByCategory(PageRequest pageRequest, UUID categoryId) {
+        // Querydsl로 조건을 생성 (카테고리에 해당하는 가게 조회)
+        BooleanExpression predicate = qRestaurant.category.id.eq(categoryId);
+
+        // Querydsl 페이징 적용
+        List<Restaurant> restaurants = restaurantRepository.findRestaurants(predicate, pageRequest);
+
+        // DTO로 변환
+        List<RestaurantResponseDto> restaurantResponseDtos = restaurants.stream()
+            .map(restaurant -> RestaurantResponseDto.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .categoryId(restaurant.getCategory().getId())
+                .ownerId(restaurant.getOwner().getId())
+                .address(restaurant.getAddress())
+                .isHidden(restaurant.getIsHidden())
+                .build())
+            .toList();
+
+        return new PageImpl<>(restaurantResponseDtos, pageRequest, restaurants.size());
     }
 }
