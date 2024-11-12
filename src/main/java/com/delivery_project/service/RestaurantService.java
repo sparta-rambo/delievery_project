@@ -137,9 +137,14 @@ public class RestaurantService {
             .build();
     }
 
-    public Page<RestaurantResponseDto> getRestaurants(PageRequest pageRequest) {
+    public Page<RestaurantResponseDto> getRestaurants(PageRequest pageRequest, String search) {
         // Querydsl로 조건을 생성 (숨겨진 가게 제외)
         BooleanExpression predicate = qRestaurant.isHidden.isFalse();
+
+        // 검색 조건이 있는 경우
+        if (search != null && !search.isEmpty()) {
+            predicate = predicate.and(qRestaurant.name.containsIgnoreCase(search));
+        }
 
         // Querydsl 페이징 적용
         List<Restaurant> restaurants = restaurantRepository.findRestaurants(predicate, pageRequest);

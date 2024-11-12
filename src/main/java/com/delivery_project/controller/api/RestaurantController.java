@@ -90,10 +90,11 @@ public class RestaurantController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "createdAt") String sortProperty,
-        @RequestParam(defaultValue = "true") boolean ascending
+        @RequestParam(defaultValue = "true") boolean ascending,
+        @RequestParam(required = false) String search
     ) {
         PageRequest pageRequest = PageRequestUtils.getPageRequest(page, size, sortProperty, ascending);
-        return restaurantService.getRestaurants(pageRequest);
+        return restaurantService.getRestaurants(pageRequest, search);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -107,4 +108,5 @@ public class RestaurantController {
         PageRequest pageRequest = PageRequestUtils.getPageRequest(page, size, sortProperty, ascending);
         return restaurantService.getRestaurantsByCategory(pageRequest, categoryId);
     }
+
 }
