@@ -1,16 +1,11 @@
 = API Documentation
 :toc: left
 
-== User API
+= API Documentation
 
-=== Get User
-Retrieve a user by ID.
+== Order API
 
-include::{snippets}/get-user/http-request.adoc[]
-include::{snippets}/get-user/http-response.adoc[]
-
-=== Create User
-Create a new user.
-
-include::{snippets}/create-user/http-request.adoc[]
-include::{snippets}/create-user/http-response.adoc[]
+include::build/generated-snippets/create-order/http-request.adoc[]
+include::build/generated-snippets/create-order/request-fields.adoc[]
+include::build/generated-snippets/create-order/http-response.adoc[]
+include::build/generated-snippets/create-order/response-fields.adoc[]
