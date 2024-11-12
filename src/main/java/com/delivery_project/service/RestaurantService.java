@@ -47,18 +47,32 @@ public class RestaurantService {
     }
 
     public void createRestaurant(RestaurantRequestDto restaurantRequestDto, User user) {
-        if (!(user.getRole().equals("ROLE_OWNER") || user.getRole().equals("ROLE_MASTER")
+        System.out.println(user.getRole());
+        if (!(user.getRole().equals("ROLE_MASTER")
             || user.getRole().equals("ROLE_MANAGER"))) {
             throw new BadRequestException("접근권한이 없습니다.");
         }
 
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
 
+        // spring security
+//        User owner = userRepository.findById(restaurantRequestDto.getOwnerId())
+//                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
+
+        // 임시 owner
+        User owner = new User(
+            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
+            "testUser",
+            "password123",
+            "ROLE_OWNER",
+            "1234 Test St, Test City"
+        );
+
         Restaurant restaurant = Restaurant.builder()
             .id(UUID.randomUUID())
             .name(restaurantRequestDto.getName())
             .category(category)
-            .owner(user)
+            .owner(owner)
             .address(restaurantRequestDto.getAddress())
             .isHidden(restaurantRequestDto.getIsHidden())
             .build();

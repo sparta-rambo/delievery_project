@@ -8,6 +8,7 @@ import com.delivery_project.entity.Category;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.service.RestaurantService;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,10 @@ public class RestaurantController {
         @RequestBody RestaurantRequestDto restaurantRequestDto) {
         // 임시 user
         User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
-            "testUser",
+            UUID.fromString("87654321-afc5-4164-a7b4-0be4fa6281ed"),
+            "testManager",
             "password123",
-            "ROLE_OWNER",
+            "ROLE_MANAGER",
             "1234 Test St, Test City"
         );
 
@@ -83,4 +84,9 @@ public class RestaurantController {
     public RestaurantResponseDto getRestaurant(@PathVariable UUID restaurantId) {
         return restaurantService.getRestaurant(restaurantId);
     }
+
+//    @GetMapping()
+//    public List<RestaurantResponseDto> getRestaurants() {
+//
+//    }
 }
