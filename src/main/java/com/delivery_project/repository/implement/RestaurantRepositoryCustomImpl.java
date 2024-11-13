@@ -33,6 +33,8 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         // Querydsl 쿼리 생성
         return queryFactory
             .selectFrom(qRestaurant)
+            .leftJoin(QRestaurant.restaurant.category).fetchJoin()
+            .leftJoin(QRestaurant.restaurant.owner).fetchJoin()
             .where(predicate)
             .offset(pageRequest.getOffset())
             .limit(pageRequest.getPageSize())
