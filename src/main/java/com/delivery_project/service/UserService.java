@@ -1,5 +1,7 @@
 package com.delivery_project.service;
 
+import com.delivery_project.dto.request.UpdateUserRequestDto;
+import com.delivery_project.dto.UserInfoDto;
 import com.delivery_project.dto.request.SignupRequestDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.UserRoleEnum;
@@ -38,12 +40,12 @@ public class UserService {
         UserRoleEnum role = signupRequestDto.getRole();
         if (role == UserRoleEnum.MANAGER) {
             if (!MANAGER_TOKEN.equals(signupRequestDto.getManagerToken())) {
-                throw new IllegalArgumentException("MANAGER 토큰이 유효하지 않습니다.");
+                throw new IllegalArgumentException("유효하지 않은 MANAGER 토큰입니다.");
             }
             role = UserRoleEnum.MANAGER;
         } else if (role == UserRoleEnum.MASTER) {
             if (!MASTER_TOKEN.equals(signupRequestDto.getMasterToken())) {
-                throw new IllegalArgumentException("MASTER 토큰이 유효하지 않습니다.");
+                throw new IllegalArgumentException("유효하지 않은 MASTER 토큰입니다.");
             }
             role = UserRoleEnum.MANAGER;
         } else {
@@ -59,6 +61,53 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+    }
 
+    public UserInfoDto getUserInfo(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        return new UserInfoDto(user);
+    }
+
+    public UserInfoDto updateUserInfo(String username, UpdateUserRequestDto updateRequest) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (updateRequest.getRole() == UserRoleEnum.MANAGER) {
+            if (updateRequest.getManagerToken() == null) {
+                throw new IllegalArgumentException("MANAGER 토큰을 입력해야 합니다.");
+            }
+            if (!MANAGER_TOKEN.equals(updateRequest.getManagerToken())) {
+                throw new IllegalArgumentException("유효하지 않은 MANAGER 토큰입니다.");
+            }
+        } else if (updateRequest.getRole() == UserRoleEnum.MASTER) {
+            if (updateRequest.getMasterToken() == null) {
+                throw new IllegalArgumentException("MASTER 토큰을 입력해야 합니다.");
+            }
+            if (!MASTER_TOKEN.equals(updateRequest.getMasterToken())) {
+                throw new IllegalArgumentException("유효하지 않은 MASTER 토큰입니다.");
+            }
+        }
+
+        User updatedUser = user.toBuilder()
+                .id(user.getId())
+                .username(updateRequest.getUsername() != null ? updateRequest.getUsername() : user.getUsername())
+                .address(updateRequest.getAddress() != null ? updateRequest.getAddress() : user.getAddress())
+                .role(updateRequest.getRole() != null ? updateRequest.getRole() : user.getRole())
+                .isDeleted(user.isDeleted())
+                .build();
+        userRepository.save(updatedUser);
+        return new UserInfoDto(updatedUser);
+    }
+
+    public void deactivateUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        User updatedUser = user.toBuilder()
+                .isDeleted(true)
+                .build();
+
+        userRepository.save(updatedUser);
     }
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class User extends Timestamped{
     @Id
     private UUID id;
@@ -22,13 +23,22 @@ public class User extends Timestamped{
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, length = 20)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String address;
+
+    private boolean isDeleted = false;
+
+    public User(String username, String address, UserRoleEnum role, boolean isDeleted) {
+        this.username = username;
+        this.address = address;
+        this.role = role;
+        this.isDeleted = isDeleted;
+    }
 }
