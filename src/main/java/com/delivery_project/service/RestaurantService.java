@@ -1,6 +1,7 @@
 package com.delivery_project.service;
 
 import com.delivery_project.common.exception.BadRequestException;
+import com.delivery_project.common.exception.InvalidInputException;
 import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.request.RestaurantRequestDto;
 import com.delivery_project.dto.response.RestaurantResponseDto;
@@ -60,6 +61,10 @@ public class RestaurantService {
             throw new BadRequestException("접근권한이 없습니다.");
         }
 
+        if (restaurantRequestDto.getName() == null || restaurantRequestDto.getName().trim().isEmpty()) {
+            throw new InvalidInputException("가게 이름은 비어있을 수 없습니다.");
+        }
+
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
 
         // spring security
@@ -81,7 +86,7 @@ public class RestaurantService {
             .category(category)
             .owner(owner)
             .address(restaurantRequestDto.getAddress())
-            .isHidden(restaurantRequestDto.getIsHidden())
+            .isHidden(false)
             .build();
 
         restaurantRepository.save(restaurant);
@@ -93,6 +98,10 @@ public class RestaurantService {
 
         validateUserAccess(user, restaurant.getOwner().getId());
 
+        if (restaurantRequestDto.getName() == null || restaurantRequestDto.getName().trim().isEmpty()) {
+            throw new InvalidInputException("가게 이름은 비어있을 수 없습니다.");
+        }
+
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
 
         restaurantRepository.save(
@@ -102,7 +111,7 @@ public class RestaurantService {
                 .category(category)
                 .owner(user)
                 .address(restaurantRequestDto.getAddress())
-                .isHidden(restaurantRequestDto.getIsHidden())
+                .isHidden(false)
                 .build()
         );
     }
@@ -133,7 +142,6 @@ public class RestaurantService {
             .categoryId(restaurant.getCategory().getId())
             .ownerId(restaurant.getOwner().getId())
             .address(restaurant.getAddress())
-            .isHidden(restaurant.getIsHidden())
             .build();
     }
 
@@ -157,7 +165,6 @@ public class RestaurantService {
                 .categoryId(restaurant.getCategory().getId())
                 .ownerId(restaurant.getOwner().getId())
                 .address(restaurant.getAddress())
-                .isHidden(restaurant.getIsHidden())
                 .build())
             .toList();
 
@@ -179,7 +186,6 @@ public class RestaurantService {
                 .categoryId(restaurant.getCategory().getId())
                 .ownerId(restaurant.getOwner().getId())
                 .address(restaurant.getAddress())
-                .isHidden(restaurant.getIsHidden())
                 .build())
             .toList();
 

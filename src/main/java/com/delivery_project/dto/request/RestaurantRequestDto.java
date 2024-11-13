@@ -13,5 +13,4 @@ public class RestaurantRequestDto {
     private UUID categoryId;
     private UUID ownerId;
     private String address;
-    private Boolean isHidden;
 }
