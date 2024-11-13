@@ -51,6 +51,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 유효성 검사
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
@@ -61,6 +64,13 @@ tasks.named('test') {
 // QueryDSL 코드 생성기 설정
 def generated = 'src/main/generated'
 
+// QueryDSL 코드 생성기 태스크 추가
+tasks.register("compileQuerydsl", JavaCompile) {
+    source = sourceSets.main.java
+    classpath = sourceSets.main.compileClasspath
+    destinationDirectory = file(generated)
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
 
 tasks.withType(JavaCompile) {
     options.getGeneratedSourceOutputDirectory().set(file(generated))
