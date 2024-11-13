@@ -1,5 +1,6 @@
 package com.delivery_project.dto.request;
 
+import com.delivery_project.enums.UserRoleEnum;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,6 +10,7 @@ public class SignupRequestDto {
     private String username;
     private String password;
     private String address;
-    private boolean manager = false;
+    private UserRoleEnum role;
     private String managerToken = "";
+    private String masterToken = "";
 }
