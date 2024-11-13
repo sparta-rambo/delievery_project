@@ -7,6 +7,7 @@ import com.delivery_project.dto.response.RestaurantResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.service.RestaurantService;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class RestaurantController {
 
     @PostMapping()
     public ResponseEntity<?> createRestaurant(
-        @RequestBody RestaurantRequestDto restaurantRequestDto) {
+        @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
         // 임시 user
         User user = new User(
             UUID.fromString("87654321-afc5-4164-a7b4-0be4fa6281ed"),
@@ -49,7 +50,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<?> updateRestaurant(@RequestBody RestaurantRequestDto restaurantRequestDto, @PathVariable UUID restaurantId) {
+    public ResponseEntity<?> updateRestaurant(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto, @PathVariable UUID restaurantId) {
         // 임시 user
         User user = new User(
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),

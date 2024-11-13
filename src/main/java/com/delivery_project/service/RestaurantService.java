@@ -1,7 +1,6 @@
 package com.delivery_project.service;
 
 import com.delivery_project.common.exception.BadRequestException;
-import com.delivery_project.common.exception.InvalidInputException;
 import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.request.RestaurantRequestDto;
 import com.delivery_project.dto.response.RestaurantResponseDto;
@@ -55,14 +54,10 @@ public class RestaurantService {
     }
 
     public void createRestaurant(RestaurantRequestDto restaurantRequestDto, User user) {
-        System.out.println(user.getRole());
+
         if (!(user.getRole().equals("ROLE_MASTER")
             || user.getRole().equals("ROLE_MANAGER"))) {
             throw new BadRequestException("접근권한이 없습니다.");
-        }
-
-        if (restaurantRequestDto.getName() == null || restaurantRequestDto.getName().trim().isEmpty()) {
-            throw new InvalidInputException("가게 이름은 비어있을 수 없습니다.");
         }
 
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
@@ -97,10 +92,6 @@ public class RestaurantService {
         Restaurant restaurant = findRestaurantByIdOrThrow(restaurantId);
 
         validateUserAccess(user, restaurant.getOwner().getId());
-
-        if (restaurantRequestDto.getName() == null || restaurantRequestDto.getName().trim().isEmpty()) {
-            throw new InvalidInputException("가게 이름은 비어있을 수 없습니다.");
-        }
 
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
 
