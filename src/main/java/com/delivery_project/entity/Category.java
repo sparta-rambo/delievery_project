@@ -23,7 +23,7 @@ public class Category extends Timestamped {
     @Id
     private UUID id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String name;
 
 }

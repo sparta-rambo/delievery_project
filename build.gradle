@@ -29,6 +29,15 @@ ext {
 }
 
 dependencies {
+
+    // JWT
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // Spring Boot 및 JPA 관련 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -53,6 +62,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 유효성 검사
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 tasks.named('test') {
@@ -63,6 +76,13 @@ tasks.named('test') {
 // QueryDSL 코드 생성기 설정
 def generated = 'src/main/generated'
 
+// QueryDSL 코드 생성기 태스크 추가
+tasks.register("compileQuerydsl", JavaCompile) {
+    source = sourceSets.main.java
+    classpath = sourceSets.main.compileClasspath
+    destinationDirectory = file(generated)
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
 
 tasks.withType(JavaCompile) {
     options.getGeneratedSourceOutputDirectory().set(file(generated))
