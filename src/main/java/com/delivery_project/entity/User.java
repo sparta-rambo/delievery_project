@@ -36,6 +36,7 @@ public class User extends Timestamped{
     private boolean isDeleted = false;
 
     public User(String username, String address, UserRoleEnum role, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.username = username;
         this.address = address;
         this.role = role;
