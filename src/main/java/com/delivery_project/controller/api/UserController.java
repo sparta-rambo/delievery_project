@@ -3,6 +3,7 @@ package com.delivery_project.controller.api;
 import com.delivery_project.dto.request.UpdateUserRequestDto;
 import com.delivery_project.dto.UserInfoDto;
 import com.delivery_project.dto.request.SignupRequestDto;
+import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.repository.UserRepository;
 import com.delivery_project.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +34,16 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<UserInfoDto> updateUserInfo(
+    public ResponseEntity<MessageResponseDto> updateUserInfo(
             @PathVariable String username,
             @RequestBody UpdateUserRequestDto updateRequest) {
-        UserInfoDto updatedUser = userService.updateUserInfo(username, updateRequest);
-        return ResponseEntity.ok(updatedUser);
+        MessageResponseDto responseMessage = userService.updateUser(username, updateRequest);
+        return ResponseEntity.ok(responseMessage);
     }
 
     @PatchMapping("/{username}")
-    public ResponseEntity<Void> deactivateUser(@PathVariable String username) {
-        userService.deactivateUser(username);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<MessageResponseDto> deleteUser(@PathVariable String username) {
+        MessageResponseDto responseMessage = userService.deleteUser(username);
+        return ResponseEntity.ok(responseMessage);
     }
 }

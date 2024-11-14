@@ -3,7 +3,9 @@ package com.delivery_project.service;
 import com.delivery_project.dto.request.UpdateUserRequestDto;
 import com.delivery_project.dto.UserInfoDto;
 import com.delivery_project.dto.request.SignupRequestDto;
+import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.entity.User;
+import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,15 @@ public class UserService {
 
     public void signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+        if (!username.matches("^[a-z0-9]{4,10}$")) {
+            throw new IllegalArgumentException("아이디는 4자 이상 10자 이하이며, 알파벳 소문자와 숫자로만 구성되어야 합니다.");
+        }
+
+        String password = signupRequestDto.getPassword();
+        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$")) {
+            throw new IllegalArgumentException("비밀번호는 8자 이상 15자 이하이며, 알파벳 대소문자, 숫자, 특수문자를 포함해야 합니다.");
+        }
+        password = passwordEncoder.encode(password);
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
@@ -36,7 +46,7 @@ public class UserService {
 
         String address = signupRequestDto.getAddress();
 
-        // ROLE 확인
+        // ROLE 확인 및 유효성 검사
         UserRoleEnum role = signupRequestDto.getRole();
         if (role == UserRoleEnum.MANAGER) {
             if (!MANAGER_TOKEN.equals(signupRequestDto.getManagerToken())) {
@@ -48,8 +58,8 @@ public class UserService {
                 throw new IllegalArgumentException("유효하지 않은 MASTER 토큰입니다.");
             }
             role = UserRoleEnum.MANAGER;
-        } else {
-            role = UserRoleEnum.CUSTOMER;
+        } else if (role != UserRoleEnum.CUSTOMER && role != UserRoleEnum.OWNER) {
+            throw new IllegalArgumentException("존재하지 않는 role입니다.");
         }
 
         User user = User.builder()
@@ -69,7 +79,7 @@ public class UserService {
         return new UserInfoDto(user);
     }
 
-    public UserInfoDto updateUserInfo(String username, UpdateUserRequestDto updateRequest) {
+    public MessageResponseDto updateUser(String username, UpdateUserRequestDto updateRequest) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -96,11 +106,12 @@ public class UserService {
                 .role(updateRequest.getRole() != null ? updateRequest.getRole() : user.getRole())
                 .isDeleted(user.isDeleted())
                 .build();
+
         userRepository.save(updatedUser);
-        return new UserInfoDto(updatedUser);
+        return new MessageResponseDto("User" + SuccessMessage.UPDATE.getMessage());
     }
 
-    public void deactivateUser(String username) {
+    public MessageResponseDto deleteUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -109,5 +120,6 @@ public class UserService {
                 .build();
 
         userRepository.save(updatedUser);
+        return new MessageResponseDto("User" + SuccessMessage.DELETE.getMessage());
     }
 }

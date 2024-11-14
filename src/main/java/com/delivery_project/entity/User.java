@@ -35,7 +35,8 @@ public class User extends Timestamped{
 
     private boolean isDeleted = false;
 
-    public User(String username, String address, UserRoleEnum role, boolean isDeleted) {
+    public User(UUID id, String username, String address, UserRoleEnum role, boolean isDeleted) {
+        this.id = id;
         this.username = username;
         this.address = address;
         this.role = role;
