@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Builder
-public class AIDescription {
+public class AIDescription extends Timestamped{
 
     @Id
     private UUID id;

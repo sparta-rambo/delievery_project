@@ -22,6 +22,20 @@ public class QOrder extends EntityPathBase<Order> {
 
     public static final QOrder order = new QOrder("order1");
 
+    public final QTimestamped _super = new QTimestamped(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    //inherited
+    public final StringPath deletedBy = _super.deletedBy;
+
     public final StringPath deliveryAddress = createString("deliveryAddress");
 
     public final StringPath deliveryRequest = createString("deliveryRequest");
@@ -35,6 +49,12 @@ public class QOrder extends EntityPathBase<Order> {
     public final StringPath status = createString("status");
 
     public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    //inherited
+    public final StringPath updatedBy = _super.updatedBy;
 
     public final QUser user;
 

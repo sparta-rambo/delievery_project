@@ -22,13 +22,33 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public static final QPayment payment = new QPayment("payment");
 
+    public final QTimestamped _super = new QTimestamped(this);
+
     public final NumberPath<Integer> amount = createNumber("amount", Integer.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    //inherited
+    public final StringPath deletedBy = _super.deletedBy;
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
     public final QOrder order;
 
     public final StringPath paymentMethod = createString("paymentMethod");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    //inherited
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QPayment(String variable) {
         this(Payment.class, forVariable(variable), INITS);
