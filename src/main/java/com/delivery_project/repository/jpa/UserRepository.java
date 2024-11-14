@@ -1,4 +1,4 @@
-package com.delivery_project.repository;
+package com.delivery_project.repository.jpa;
 
 import com.delivery_project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

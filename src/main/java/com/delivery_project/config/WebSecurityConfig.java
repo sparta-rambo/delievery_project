@@ -1,7 +1,6 @@
 package com.delivery_project.config;
 
 import com.delivery_project.jwt.JwtUtil;
-import com.delivery_project.repository.UserRepository;
 import com.delivery_project.security.JwtAuthenticationFilter;
 import com.delivery_project.security.JwtAuthorizationFilter;
 import com.delivery_project.security.UserDetailsServiceImpl;
@@ -61,7 +60,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/**").permitAll() // '/api/'로 시작하는 요청 모두 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
