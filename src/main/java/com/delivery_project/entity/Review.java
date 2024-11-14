@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Review {
+public class Review extends Timestamped{
 
     @Id
     private UUID id;

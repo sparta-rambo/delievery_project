@@ -72,7 +72,7 @@ public class DataInitializer implements CommandLineRunner {
             menuRepository.save(menu1);
             menuRepository.save(menu2);
 
-            Order order = new Order(UUID.randomUUID(),user,restaurant,"온라인",OrderStatus.CONFIRM.getStatus(), 48000,"서울특별시 노원구","문앞에 놓아주세요");
+            Order order = new Order(UUID.fromString("54661171-6767-433e-bb0f-d5295056872c"),user,restaurant,"온라인",OrderStatus.CONFIRM.getStatus(), 48000,"서울특별시 노원구","문앞에 놓아주세요");
             orderRepository.save(order);
 
             OrderItem orderItem1 = OrderItem.builder()
