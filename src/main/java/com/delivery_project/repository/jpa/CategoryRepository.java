@@ -1,6 +1,7 @@
 package com.delivery_project.repository.jpa;
 
 import com.delivery_project.entity.Category;
+
 import com.delivery_project.repository.implement.CategoryRepositoryCustom;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;

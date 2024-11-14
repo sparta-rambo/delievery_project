@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Payment {
+public class Payment extends Timestamped {
 
     @Id
     private UUID id;

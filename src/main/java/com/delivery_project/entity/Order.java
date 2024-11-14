@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Order {
+public class Order extends Timestamped{
 
     @Id
     private UUID id;
