@@ -13,6 +13,7 @@ import com.delivery_project.repository.jpa.CategoryRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,12 +68,12 @@ public class RestaurantService {
 //        User owner = userRepository.findById(restaurantRequestDto.getOwnerId())
 //                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
 
-        // 임시 owner
+        // 임시 user
         User owner = new User(
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testUser",
             "password123",
-            UserRoleEnum.CUSTOMER,
+            UserRoleEnum.OWNER,
             false
         );
 
@@ -125,6 +126,7 @@ public class RestaurantService {
         );
     }
 
+    @Transactional(readOnly = true)
     public RestaurantResponseDto getRestaurant(UUID restaurantId) {
         Restaurant restaurant = findRestaurantByIdOrThrow(restaurantId);
 
@@ -134,9 +136,11 @@ public class RestaurantService {
             .categoryId(restaurant.getCategory().getId())
             .ownerId(restaurant.getOwner().getId())
             .address(restaurant.getAddress())
+            .averageRating(Optional.ofNullable(restaurant.getAverageRating()))
             .build();
     }
 
+    @Transactional(readOnly = true)
     public Page<RestaurantResponseDto> getRestaurants(PageRequest pageRequest, String search) {
         // Querydsl로 조건을 생성 (숨겨진 가게 제외)
         BooleanExpression predicate = qRestaurant.isHidden.isFalse();
@@ -157,12 +161,14 @@ public class RestaurantService {
                 .categoryId(restaurant.getCategory().getId())
                 .ownerId(restaurant.getOwner().getId())
                 .address(restaurant.getAddress())
+                .averageRating(Optional.ofNullable(restaurant.getAverageRating()))
                 .build())
             .toList();
 
         return new PageImpl<>(restaurantResponseDtos, pageRequest, restaurants.size());
     }
 
+    @Transactional(readOnly = true)
     public Page<RestaurantResponseDto> getRestaurantsByCategory(PageRequest pageRequest, UUID categoryId) {
         // Querydsl로 조건을 생성 (카테고리에 해당하는 가게 조회)
         BooleanExpression predicate = qRestaurant.category.id.eq(categoryId);
@@ -178,6 +184,7 @@ public class RestaurantService {
                 .categoryId(restaurant.getCategory().getId())
                 .ownerId(restaurant.getOwner().getId())
                 .address(restaurant.getAddress())
+                .averageRating(Optional.ofNullable(restaurant.getAverageRating()))
                 .build())
             .toList();
 

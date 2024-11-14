@@ -37,10 +37,10 @@ public class RestaurantController {
         @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
         // 임시 user
         User user = new User(
-            UUID.fromString("87654321-afc5-4164-a7b4-0be4fa6281ed"),
-            "testManager",
+            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
+            "testUser",
             "password123",
-            UserRoleEnum.CUSTOMER,
+            UserRoleEnum.MANAGER,
             false
         );
 
@@ -57,7 +57,7 @@ public class RestaurantController {
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testUser",
             "password123",
-            UserRoleEnum.CUSTOMER,
+            UserRoleEnum.OWNER,
             false
         );
 
@@ -73,7 +73,7 @@ public class RestaurantController {
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testUser",
             "password123",
-            UserRoleEnum.CUSTOMER,
+            UserRoleEnum.OWNER,
             false
         );
 
