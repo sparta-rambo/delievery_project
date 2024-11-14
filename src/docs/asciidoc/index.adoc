@@ -5,7 +5,16 @@
 
 == Order API
 
+=== create
+
 include::build/generated-snippets/create-order/http-request.adoc[]
 include::build/generated-snippets/create-order/request-fields.adoc[]
 include::build/generated-snippets/create-order/http-response.adoc[]
 include::build/generated-snippets/create-order/response-fields.adoc[]
+
+=== fetch
+
+include::build/generated-snippets/find-order/http-request.adoc[]
+include::build/generated-snippets/find-order/request-fields.adoc[]
+include::build/generated-snippets/find-order/http-response.adoc[]
+include::build/generated-snippets/find-order/response-fields.adoc[]

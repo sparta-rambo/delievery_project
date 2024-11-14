@@ -1,19 +1,21 @@
 package com.delivery_project.service;
 
 import com.delivery_project.common.exception.ResourceNotFoundException;
+import com.delivery_project.dto.MenuDetails;
 import com.delivery_project.dto.request.OrderItemRequestDto;
 import com.delivery_project.dto.request.OrderRequestDto;
-import com.delivery_project.entity.Menu;
-import com.delivery_project.entity.Order;
-import com.delivery_project.entity.Restaurant;
-import com.delivery_project.entity.User;
+import com.delivery_project.dto.response.OrderResponseDto;
+import com.delivery_project.entity.*;
 import com.delivery_project.repository.jpa.MenuRepository;
 import com.delivery_project.repository.jpa.OrderRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,16 +45,11 @@ public class OrderService {
     }
 
     public int getOrderPrice(OrderRequestDto.Create orderRequestDto) {
+
         // 메뉴 ID 목록 추출 후, DB에서 한 번에 조회
-        List<UUID> menuIds = orderRequestDto.getOrderItemRequestDtos().stream()
-                .map(OrderItemRequestDto.Create::getMenuId)
-                .collect(Collectors.toList());
+        List<UUID> menuIds = getMenuIdByDtoCreate(orderRequestDto);
+        Map<UUID, Menu> menuMap = getMenuMapByIds(menuIds);
 
-        // 메뉴 목록을 Map 형태로 변환하여 조회 성능 개선
-        Map<UUID, Menu> menuMap = menuRepository.findAllById(menuIds).stream()
-                .collect(Collectors.toMap(Menu::getId, menu -> menu));
-
-        // 가격 계산
         return orderRequestDto.getOrderItemRequestDtos().stream()
                 .mapToInt(orderItemRequestDto -> {
                     Menu menu = menuMap.get(orderItemRequestDto.getMenuId());
@@ -62,6 +59,49 @@ public class OrderService {
                     return orderItemRequestDto.getQuantity() * menu.getPrice();
                 })
                 .sum();
+    }
+
+    private Map<UUID, Menu> getMenuMapByIds(List<UUID> menuIds) {
+        return menuRepository.findAllById(menuIds).stream()
+                .collect(Collectors.toMap(Menu::getId, menu -> menu));
+    }
+
+    private List<UUID> getMenuIdByDtoCreate(OrderRequestDto.Create orderRequestDto) {
+        return orderRequestDto.getOrderItemRequestDtos().stream()
+                .map(OrderItemRequestDto.Create::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponseDto findOrderDetails(UUID orderId) {
+        List<Tuple> results = orderRepository.findOrderDetailsTuples(orderId);
+
+        // 빈 OrderResponseDto를 생성하여 메뉴 정보 누적
+        OrderResponseDto orderResponseDto = results.stream()
+                .findFirst()  // 첫 번째 Tuple에서 기본 주문 정보만 가져오기
+                .map(tuple -> new OrderResponseDto(
+                        new HashMap<>(), // 변경 가능한 빈 Map 생성
+                        tuple.get(QRestaurant.restaurant.name),
+                        tuple.get(QUser.user.username),
+                        tuple.get(QOrder.order.totalPrice),
+                        Timestamp.valueOf(tuple.get(QOrder.order.createdAt)),
+                        tuple.get(QOrder.order.orderType),
+                        tuple.get(QOrder.order.deliveryAddress),
+                        tuple.get(QOrder.order.deliveryRequest),
+                        tuple.get(QOrder.order.status)
+                ))
+                .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+
+        // 각 메뉴 정보를 Map에 추가
+        results.forEach(tuple -> {
+            String menuName = tuple.get(QMenu.menu.name);
+            MenuDetails menuDetails = new MenuDetails(
+                    tuple.get(QOrderItem.orderItem.quantity),
+                    tuple.get(QMenu.menu.price)
+            );
+            orderResponseDto.getOrderItems().put(menuName, menuDetails);  // OrderItems Map에 추가
+        });
+
+        return orderResponseDto;
     }
 
 
