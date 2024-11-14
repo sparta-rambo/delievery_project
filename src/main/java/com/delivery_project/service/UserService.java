@@ -7,7 +7,7 @@ import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.enums.UserRoleEnum;
-import com.delivery_project.repository.UserRepository;
+import com.delivery_project.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
