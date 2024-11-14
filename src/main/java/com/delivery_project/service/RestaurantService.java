@@ -8,6 +8,7 @@ import com.delivery_project.entity.Category;
 import com.delivery_project.entity.QRestaurant;
 import com.delivery_project.entity.Restaurant;
 import com.delivery_project.entity.User;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.jpa.CategoryRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -68,11 +69,10 @@ public class RestaurantService {
 
         // 임시 owner
         User owner = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
-            "testUser",
-            "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            "testManager",
+            "1234 Test St, Test City",
+            UserRoleEnum.OWNER,
+            false // 기본값 또는 원하는 값
         );
 
         Restaurant restaurant = Restaurant.builder()

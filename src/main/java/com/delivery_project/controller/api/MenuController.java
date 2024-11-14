@@ -6,6 +6,7 @@ import com.delivery_project.dto.response.MenuResponseDto;
 import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.service.MenuService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -35,11 +36,10 @@ public class MenuController {
 
         // 임시 user
         User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testManager",
-            "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            "1234 Test St, Test City",
+            UserRoleEnum.OWNER,
+            false // 기본값 또는 원하는 값
         );
 
         menuService.createMenu(menuRequestDto, user);
@@ -53,11 +53,10 @@ public class MenuController {
 
         // 임시 user
         User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testManager",
-            "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            "1234 Test St, Test City",
+            UserRoleEnum.OWNER,
+            false // 기본값 또는 원하는 값
         );
 
         menuService.updateMenu(menuId, menuRequestDto, user);
@@ -70,11 +69,10 @@ public class MenuController {
 
         // 임시 user
         User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testManager",
-            "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            "1234 Test St, Test City",
+            UserRoleEnum.OWNER,
+            false // 기본값 또는 원하는 값
         );
 
         menuService.deleteMenu(menuId, user);
