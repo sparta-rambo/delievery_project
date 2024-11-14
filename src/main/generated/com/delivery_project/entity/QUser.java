@@ -37,9 +37,11 @@ public class QUser extends EntityPathBase<User> {
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath password = createString("password");
 
-    public final StringPath role = createString("role");
+    public final EnumPath<com.delivery_project.enums.UserRoleEnum> role = createEnum("role", com.delivery_project.enums.UserRoleEnum.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
