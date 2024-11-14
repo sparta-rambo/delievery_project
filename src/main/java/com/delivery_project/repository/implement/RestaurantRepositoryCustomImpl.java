@@ -44,7 +44,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
             .leftJoin(qRestaurant.owner).fetchJoin()
             .leftJoin(qReview).on(qReview.order.restaurant.id.eq(qRestaurant.id))
             .where(predicate)
-            .groupBy(qRestaurant.id, qRestaurant.category.id)
+            .groupBy(qRestaurant.id, qRestaurant.category.id, qRestaurant.owner.id)
             .offset(pageRequest.getOffset())
             .limit(pageRequest.getPageSize())
             .orderBy(orderSpecifier)
