@@ -41,7 +41,7 @@ public class RestaurantController {
             "testUser",
             "password123",
             UserRoleEnum.MANAGER,
-            false
+            false // 기본값 또는 원하는 값
         );
 
         restaurantService.createRestaurant(restaurantRequestDto, user);
