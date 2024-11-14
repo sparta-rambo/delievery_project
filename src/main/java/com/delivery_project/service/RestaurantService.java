@@ -130,13 +130,15 @@ public class RestaurantService {
     public RestaurantResponseDto getRestaurant(UUID restaurantId) {
         Restaurant restaurant = findRestaurantByIdOrThrow(restaurantId);
 
+        Double averageRating = restaurantRepository.calculateAverageRating(restaurantId);
+
         return RestaurantResponseDto.builder()
             .id(restaurantId)
             .name(restaurant.getName())
             .categoryId(restaurant.getCategory().getId())
             .ownerId(restaurant.getOwner().getId())
             .address(restaurant.getAddress())
-            .averageRating(Optional.ofNullable(restaurant.getAverageRating()))
+            .averageRating(Optional.ofNullable(averageRating))
             .build();
     }
 

@@ -12,6 +12,7 @@ import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -38,10 +39,18 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
         // Querydsl 쿼리 생성
         return queryFactory
-            .select(qRestaurant)
+            .select(Projections.fields(
+                Restaurant.class,
+                qRestaurant.id.as("id"),
+                qRestaurant.name.as("name"),
+                qRestaurant.address.as("address"),
+                qRestaurant.category.as("category"),
+                qRestaurant.owner.as("owner"),
+                qReview.rating.avg().as("averageRating")
+            ))
             .from(qRestaurant)
-            .leftJoin(qRestaurant.category).fetchJoin()
-            .leftJoin(qRestaurant.owner).fetchJoin()
+            .leftJoin(qRestaurant.category)
+            .leftJoin(qRestaurant.owner)
             .leftJoin(qReview).on(qReview.order.restaurant.id.eq(qRestaurant.id))
             .where(predicate)
             .groupBy(qRestaurant.id, qRestaurant.category.id, qRestaurant.owner.id)
@@ -60,6 +69,24 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 return restaurant;
             })
             .collect(Collectors.toList());
+    }
+
+    public Double calculateAverageRating(UUID restaurantId) {
+        QReview qReview = QReview.review;
+
+        // 리뷰의 평균 평점을 구하는 쿼리
+        Double averageRating = queryFactory
+            .select(qReview.rating.avg())
+            .from(qReview)
+            .where(qReview.order.restaurant.id.eq(restaurantId))
+            .fetchOne();
+
+        if (averageRating != null) {
+            // 평점을 소수점 첫째 자리까지 반올림
+            return new BigDecimal(averageRating).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        } else {
+            return null;  // 리뷰가 없으면 null 반환
+        }
     }
 
     private OrderSpecifier<?> getOrderSpecifier(QRestaurant qRestaurant, PageRequest pageRequest) {
