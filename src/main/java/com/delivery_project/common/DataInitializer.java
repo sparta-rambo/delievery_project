@@ -32,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
                     .address("서울특별시 노원구")
                     .role("ROLE_USER")
                     .password("1234")
-                    .username("test")
+                    .username("김성호")
                     .build();
             userRepository.save(user);
 
@@ -52,7 +52,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             restaurantRepository.save(restaurant);
 
-            Menu menu = Menu.builder()
+            Menu menu1 = Menu.builder()
                     .id(UUID.randomUUID())
                     .name("양념치킨")
                     .isHidden(false)
@@ -60,18 +60,35 @@ public class DataInitializer implements CommandLineRunner {
                     .price(24000)
                     .description("양념치킨 입니다.")
                     .build();
-            menuRepository.save(menu);
 
-            Order order = new Order(UUID.randomUUID(),user,restaurant,"온라인",OrderStatus.CONFIRM.getStatus(), 28000,"서울특별시 노원구","문앞에 놓아주세요");
+            Menu menu2 = Menu.builder()
+                    .id(UUID.randomUUID())
+                    .name("간장치킨")
+                    .isHidden(false)
+                    .restaurant(restaurant)
+                    .price(24000)
+                    .description("간장치킨 입니다.")
+                    .build();
+            menuRepository.save(menu1);
+            menuRepository.save(menu2);
+
+            Order order = new Order(UUID.randomUUID(),user,restaurant,"온라인",OrderStatus.CONFIRM.getStatus(), 48000,"서울특별시 노원구","문앞에 놓아주세요");
             orderRepository.save(order);
 
-            OrderItem orderItem = OrderItem.builder()
+            OrderItem orderItem1 = OrderItem.builder()
                     .id(UUID.randomUUID())
                     .order(order)
-                    .menu(menu)
+                    .menu(menu1)
                     .quantity(1)
                     .build();
-            orderItemRepository.save(orderItem);
+            OrderItem orderItem2 = OrderItem.builder()
+                    .id(UUID.randomUUID())
+                    .order(order)
+                    .menu(menu2)
+                    .quantity(1)
+                    .build();
+            orderItemRepository.save(orderItem1);
+            orderItemRepository.save(orderItem2);
 
             Review review = Review.builder()
                     .id(UUID.randomUUID())
@@ -82,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Payment payment = Payment.builder()
                     .id(UUID.randomUUID())
-                    .amount(28000)
+                    .amount(48000)
                     .order(order)
                     .paymentMethod("CARD")
                     .build();
