@@ -4,7 +4,7 @@ import com.delivery_project.dto.request.UpdateUserRequestDto;
 import com.delivery_project.dto.UserInfoDto;
 import com.delivery_project.dto.request.SignupRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
-import com.delivery_project.repository.UserRepository;
+import com.delivery_project.repository.jpa.UserRepository;
 import com.delivery_project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

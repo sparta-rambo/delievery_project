@@ -19,11 +19,31 @@ public class QAIDescription extends EntityPathBase<AIDescription> {
 
     public static final QAIDescription aIDescription = new QAIDescription("aIDescription");
 
+    public final QTimestamped _super = new QTimestamped(this);
+
     public final StringPath aiRequest = createString("aiRequest");
 
     public final StringPath aiResponse = createString("aiResponse");
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    //inherited
+    public final StringPath deletedBy = _super.deletedBy;
+
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    //inherited
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QAIDescription(String variable) {
         super(AIDescription.class, forVariable(variable));

@@ -6,6 +6,7 @@ import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.dto.response.RestaurantResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.service.RestaurantService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -39,8 +40,8 @@ public class RestaurantController {
             UUID.fromString("87654321-afc5-4164-a7b4-0be4fa6281ed"),
             "testManager",
             "password123",
-            "ROLE_MANAGER",
-            "1234 Test St, Test City"
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.createRestaurant(restaurantRequestDto, user);
@@ -56,8 +57,8 @@ public class RestaurantController {
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testUser",
             "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.updateRestaurant(restaurantRequestDto, restaurantId, user);
@@ -72,8 +73,8 @@ public class RestaurantController {
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
             "testUser",
             "password123",
-            "ROLE_OWNER",
-            "1234 Test St, Test City"
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.deleteRestaurant(restaurantId, user);

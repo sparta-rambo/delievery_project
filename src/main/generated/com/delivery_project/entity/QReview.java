@@ -22,11 +22,31 @@ public class QReview extends EntityPathBase<Review> {
 
     public static final QReview review = new QReview("review");
 
+    public final QTimestamped _super = new QTimestamped(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
+
+    //inherited
+    public final StringPath deletedBy = _super.deletedBy;
+
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
     public final QOrder order;
 
     public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    //inherited
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QReview(String variable) {
         this(Review.class, forVariable(variable), INITS);

@@ -2,6 +2,7 @@ package com.delivery_project.common;
 
 import com.delivery_project.entity.*;
 import com.delivery_project.enums.OrderStatus;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.jpa.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             User user = User.builder()
                     .id(UUID.randomUUID())
                     .address("서울특별시 노원구")
-                    .role("ROLE_USER")
+                    .role(UserRoleEnum.CUSTOMER)
                     .password("1234")
                     .username("김성호")
                     .build();
