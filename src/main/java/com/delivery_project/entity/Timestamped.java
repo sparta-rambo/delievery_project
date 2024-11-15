@@ -42,4 +42,14 @@ public abstract class Timestamped {
         this.createdAt = LocalDateTime.now(); // 최초 생성 시점
     }
 
+    // 소프트 삭제 메서드
+    public void delete(String deletedBy) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
+    }
+
+    // 삭제 여부 확인 메서드
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
 }
