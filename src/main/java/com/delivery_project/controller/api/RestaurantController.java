@@ -7,6 +7,7 @@ import com.delivery_project.dto.response.RestaurantResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.enums.UserRoleEnum;
+import com.delivery_project.security.UserDetailsImpl;
 import com.delivery_project.service.RestaurantService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,51 +36,31 @@ public class RestaurantController {
 
     @PostMapping()
     public ResponseEntity<?> createRestaurant(
-        @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
-        // 임시 user
-        // 임시 user
-        User user = new User(
-            "testManager",
-            "password123",
-            UserRoleEnum.CUSTOMER,
-            false
-        );
+      
+        @Valid @RequestBody RestaurantRequestDto restaurantRequestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        restaurantService.createRestaurant(restaurantRequestDto, user);
+        restaurantService.createRestaurant(restaurantRequestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(new MessageResponseDto("Restaurant" + SuccessMessage.CREATE.getMessage()));
     }
 
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<?> updateRestaurant(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto, @PathVariable UUID restaurantId) {
-        // 임시 user
-        // 임시 user
-        User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
-            "testUser",
-            "password123",
-            UserRoleEnum.CUSTOMER,
-            false
-        );
+    public ResponseEntity<?> updateRestaurant(
+        @Valid @RequestBody RestaurantRequestDto restaurantRequestDto,
+        @PathVariable UUID restaurantId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        restaurantService.updateRestaurant(restaurantRequestDto, restaurantId, user);
+        restaurantService.updateRestaurant(restaurantRequestDto, restaurantId, userDetails.getUser());
 
         return ResponseEntity.ok(new MessageResponseDto("Restaurant" + SuccessMessage.UPDATE.getMessage()));
     }
 
     @PatchMapping("/{restaurantId}")
-    public ResponseEntity<?> deleteRestaurant(@PathVariable UUID restaurantId) {
-        // 임시 user
-        User user = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
-            "testUser",
-            "password123",
-            UserRoleEnum.CUSTOMER,
-            false
-        );
+    public ResponseEntity<?> deleteRestaurant(@PathVariable UUID restaurantId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        restaurantService.deleteRestaurant(restaurantId, user);
+        restaurantService.deleteRestaurant(restaurantId, userDetails.getUser());
 
         return ResponseEntity.ok(new MessageResponseDto("Restaurant" + SuccessMessage.DELETE.getMessage()));
     }
