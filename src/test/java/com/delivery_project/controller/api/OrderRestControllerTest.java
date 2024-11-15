@@ -1,29 +1,34 @@
 package com.delivery_project.controller.api;
 
+import com.delivery_project.config.WebSecurityConfig;
 import com.delivery_project.dto.MenuDetails;
 import com.delivery_project.dto.request.OrderItemRequestDto;
 import com.delivery_project.dto.request.OrderRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.dto.response.OrderResponseDto;
-import com.delivery_project.entity.Order;
-import com.delivery_project.entity.Restaurant;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.OrderStatus;
 import com.delivery_project.enums.SuccessMessage;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -46,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = OrderRestController.class)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "docs.api.com")
+@AutoConfigureMockMvc(addFilters = false)
 public class OrderRestControllerTest {
 
     @Autowired
@@ -57,10 +63,27 @@ public class OrderRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    User mockUser;
+
+    @BeforeEach
+    public void setUp() {
+        // Mock User 객체 생성
+        mockUser = User.builder()
+                .id(UUID.randomUUID())
+                .username("김성호")
+                .address("서울특별시 노원구")
+                .role(UserRoleEnum.CUSTOMER)
+                .build();
+
+        // SecurityContext에 Authentication 객체 설정
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockUser, null, List.of()));
+    }
+
     @Test
     @DisplayName("주문 생성 테스트")
     public void createOrderTest() throws Exception {
-        // given
+        // given: 주문 항목 생성
         OrderItemRequestDto.Create orderItem1 = OrderItemRequestDto.Create.builder()
                 .menuId(UUID.randomUUID())
                 .quantity(3)
@@ -69,9 +92,9 @@ public class OrderRestControllerTest {
                 .menuId(UUID.randomUUID())
                 .quantity(2)
                 .build();
-
         List<OrderItemRequestDto.Create> orderItems = List.of(orderItem1, orderItem2);
 
+        // 주문 요청 DTO 생성
         OrderRequestDto.Create orderRequestDto = OrderRequestDto.Create.builder()
                 .orderItemRequestDtos(orderItems)
                 .orderType("online")
@@ -79,17 +102,14 @@ public class OrderRestControllerTest {
                 .deliveryRequest("문 앞에 놓아주세요")
                 .restaurantId(UUID.randomUUID())
                 .build();
-        Order order = Order.builder()
-                .orderRequestDto(orderRequestDto)
-                .totalPrice(7000)
-                .user(Mockito.mock(User.class))
-                .restaurant(Mockito.mock(Restaurant.class))
-                .build();
+
+        // 응답 메시지 DTO
         MessageResponseDto responseDto = new MessageResponseDto("Order" + SuccessMessage.CREATE.getMessage());
 
-        doNothing().when(orderService).createOrder(Mockito.any(OrderRequestDto.Create.class), Mockito.any());
+        // Mocking
+        doNothing().when(orderService).createOrder(Mockito.any(OrderRequestDto.Create.class),  Mockito.eq(mockUser));
 
-        // when / then
+        // when / then: MockMvc 요청
         mockMvc.perform(post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequestDto)))
@@ -99,17 +119,20 @@ public class OrderRestControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("orderItemRequestDtos[].menuId").description("주문한 메뉴의 id 입니다."),
-                                fieldWithPath("orderItemRequestDtos[].quantity").description("주문한 메뉴의 수량 입니다."),
-                                fieldWithPath("orderType").description("주문의 타입입니다. 'online' or 'offline'"),
-                                fieldWithPath("deliveryAddress").description("배달 배송지입니다."),
-                                fieldWithPath("deliveryRequest").description("배달 요청사항입니다."),
-                                fieldWithPath("restaurantId").description("가게 id 입니다")
+                                fieldWithPath("orderItemRequestDtos[].menuId").description("주문한 메뉴의 고유 ID"),
+                                fieldWithPath("orderItemRequestDtos[].quantity").description("주문한 메뉴의 수량"),
+                                fieldWithPath("orderType").description("주문의 유형 (online 또는 offline)"),
+                                fieldWithPath("deliveryAddress").description("배달 주소"),
+                                fieldWithPath("deliveryRequest").description("배달 요청 사항"),
+                                fieldWithPath("restaurantId").description("주문한 음식점의 고유 ID")
                         ),
                         responseFields(
-                                fieldWithPath("message").description("주문이 성공적으로 생성 시 메시지입니다.")
+                                fieldWithPath("message").description("주문 생성 성공 메시지")
                         )
                 ));
+
+        // verify: Mock Service 호출 여부 확인
+        Mockito.verify(orderService).createOrder(Mockito.any(OrderRequestDto.Create.class), Mockito.any());
     }
 
     @Test
