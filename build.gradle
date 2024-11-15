@@ -60,6 +60,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
+    // security test
+    testImplementation 'org.springframework.security:spring-security-test'
+
     // 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
