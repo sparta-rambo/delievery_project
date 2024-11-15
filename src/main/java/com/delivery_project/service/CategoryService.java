@@ -1,10 +1,13 @@
 package com.delivery_project.service;
 
+import com.delivery_project.common.exception.BadRequestException;
 import com.delivery_project.common.exception.DuplicateResourceException;
 import com.delivery_project.common.exception.InvalidInputException;
 import com.delivery_project.common.exception.ResourceNotFoundException;
 import com.delivery_project.dto.response.CategoryResponseDto;
 import com.delivery_project.entity.Category;
+import com.delivery_project.entity.User;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.jpa.CategoryRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -20,13 +23,20 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public void addCategory(String categoryName) {
+    // 권한 검증
+    private void validateUserAccess(User user) {
+        if (!(user.getRole().equals(UserRoleEnum.MANAGER) || user.getRole()
+            .equals(UserRoleEnum.MASTER))) {
+            throw new BadRequestException("접근권한이 없습니다.");
+        }
+    }
+
+    public void addCategory(String categoryName, User user) {
+
+        validateUserAccess(user);
+
         if (categoryRepository.existsByName(categoryName)) {
             throw new DuplicateResourceException("이미 존재하는 카테고리 이름입니다.");
-        }
-
-        if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new InvalidInputException("카테고리 이름은 비어있을 수 없습니다.");
         }
 
         // 카테고리 객체 생성 후 저장
@@ -38,13 +48,12 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public void updateCategory(UUID categoryId, String categoryName) {
+    public void updateCategory(UUID categoryId, String categoryName, User user) {
+
+        validateUserAccess(user);
+
         if (categoryRepository.existsByName(categoryName)) {
             throw new DuplicateResourceException("이미 존재하는 카테고리 이름입니다.");
-        }
-
-        if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new InvalidInputException("카테고리 이름은 비어있을 수 없습니다.");
         }
 
         Category category = categoryRepository.findById(categoryId)

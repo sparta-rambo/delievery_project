@@ -55,3 +55,4 @@ public abstract class Timestamped {
         return this.deletedAt != null;
     }
 }
+
