@@ -8,6 +8,7 @@ import com.delivery_project.entity.Menu;
 import com.delivery_project.entity.QMenu;
 import com.delivery_project.entity.Restaurant;
 import com.delivery_project.entity.User;
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.jpa.MenuRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -42,8 +43,8 @@ public class MenuService {
     }
 
     private void validateUserAccess(User user, UUID ownerId) {
-        if (!(user.getId().equals(ownerId) || user.getRole().equals("ROLE_MASTER") || user.getRole()
-            .equals("ROLE_MANAGER"))) {
+        if (!(user.getId().equals(ownerId) || user.getRole().equals(UserRoleEnum.MANAGER) || user.getRole()
+            .equals(UserRoleEnum.MASTER))) {
             throw new BadRequestException("해당 가게에 대한 접근권한이 없습니다.");
         }
     }

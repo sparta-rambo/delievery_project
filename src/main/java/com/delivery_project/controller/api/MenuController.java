@@ -7,6 +7,7 @@ import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.enums.UserRoleEnum;
+import com.delivery_project.security.UserDetailsImpl;
 import com.delivery_project.service.MenuService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,50 +34,33 @@ public class MenuController {
     private final MenuService menuService;
 
     @PostMapping()
-    public ResponseEntity<?> createMenu(@Valid @RequestBody MenuRequestDto menuRequestDto) {
+    public ResponseEntity<?> createMenu(
+        @Valid @RequestBody MenuRequestDto menuRequestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        // 임시 user
-        User user = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
-        );
-
-        menuService.createMenu(menuRequestDto, user);
+        menuService.createMenu(menuRequestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(new MessageResponseDto("Menu" + SuccessMessage.CREATE.getMessage()));
     }
 
     @PutMapping("/{menuId}")
-    public ResponseEntity<?> updateMenu(@PathVariable UUID menuId, @Valid @RequestBody MenuRequestDto menuRequestDto) {
+    public ResponseEntity<?> updateMenu(
+        @PathVariable UUID menuId,
+        @Valid @RequestBody MenuRequestDto menuRequestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        // 임시 user
-        User user = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
-        );
-
-        menuService.updateMenu(menuId, menuRequestDto, user);
+        menuService.updateMenu(menuId, menuRequestDto, userDetails.getUser());
 
         return ResponseEntity.ok(new MessageResponseDto("Menu" + SuccessMessage.UPDATE.getMessage()));
     }
 
     @PatchMapping("/{menuId}")
-    public ResponseEntity<?> deleteMenu(@PathVariable UUID menuId) {
+    public ResponseEntity<?> deleteMenu(
+        @PathVariable UUID menuId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        // 임시 user
-        User user = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
-        );
-
-        menuService.deleteMenu(menuId, user);
+        menuService.deleteMenu(menuId, userDetails.getUser());
 
         return ResponseEntity.ok(new MessageResponseDto("Menu" + SuccessMessage.DELETE.getMessage()));
     }
