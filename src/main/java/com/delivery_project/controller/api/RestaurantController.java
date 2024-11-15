@@ -36,8 +36,8 @@ public class RestaurantController {
     public ResponseEntity<?> createRestaurant(
         @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
         // 임시 user
+        // 임시 user
         User user = new User(
-            UUID.fromString("87654321-afc5-4164-a7b4-0be4fa6281ed"),
             "testManager",
             "password123",
             UserRoleEnum.CUSTOMER,
@@ -52,6 +52,7 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}")
     public ResponseEntity<?> updateRestaurant(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto, @PathVariable UUID restaurantId) {
+        // 임시 user
         // 임시 user
         User user = new User(
             UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
