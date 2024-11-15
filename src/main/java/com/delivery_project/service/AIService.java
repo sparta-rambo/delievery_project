@@ -27,7 +27,6 @@ public class AIService {
 
     public AIDescription generateResponse(String prompt) {
         String modifiedPrompt = prompt + " 답변을 50자 이하로 작성해 주세요.";
-        System.out.println(modifiedPrompt);
 
         // JSON 요청 형식 설정 (curl 명령어 형식에 맞추기)
         String requestBody = "{ \"contents\": [ { \"parts\": [ { \"text\": \"" + modifiedPrompt.replace("\"", "\\\"") + "\" } ] } ] }";
