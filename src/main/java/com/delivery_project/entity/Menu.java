@@ -35,4 +35,9 @@ public class Menu extends Timestamped{
     @Column(nullable = false)
     private Boolean isHidden = false;
 
+    // 소프트 삭제 및 숨김 처리를 위한 메서드
+    public void markAsDeleted(String deletedBy) {
+        this.delete(deletedBy); // Timestamped의 delete 메서드 호출
+        this.isHidden = true;
+    }
 }

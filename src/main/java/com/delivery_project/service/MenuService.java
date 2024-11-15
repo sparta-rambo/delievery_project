@@ -103,16 +103,9 @@ public class MenuService {
 
         validateUserAccess(user, restaurant.getOwner().getId());
 
-        menuRepository.save(
-            Menu.builder()
-                .id(menuId)
-                .restaurant(restaurant)
-                .name(menu.getName())
-                .description(menu.getDescription())
-                .price(menu.getPrice())
-                .isHidden(true)
-                .build()
-        );
+        menu.markAsDeleted(user.getUsername());
+
+        menuRepository.save(menu);
     }
 
     public Page<MenuResponseDto> getMenusByRestaurant(UUID restaurantId, PageRequest pageRequest) {
