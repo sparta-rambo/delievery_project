@@ -56,13 +56,9 @@ dependencies {
     // Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    // Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
     // 테스트 및 Rest Docs
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // security test
     testImplementation 'org.springframework.security:spring-security-test'
@@ -70,6 +66,11 @@ dependencies {
     // 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // Jackson Databind (JSON 파싱을 위한 의존성)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Mockito
+    testImplementation 'org.mockito:mockito-core:4.3.1'
 }
 
 tasks.named('test') {

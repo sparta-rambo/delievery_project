@@ -36,5 +36,11 @@ public class Restaurant extends Timestamped {
     @Column(nullable = false)
     private Boolean isHidden = false;
 
+    @Transient // DB에 저장하지는 않고 평점 계산용으로 사용
+    private Double averageRating;
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
 }
 
