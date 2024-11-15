@@ -68,8 +68,6 @@ public class AIService {
             }
         }
 
-        System.out.println("AI Response: \n" + formattedResponse.toString());
-
         AIDescription aiDescription = AIDescription.builder()
                 .id(UUID.randomUUID())
                 .aiRequest(modifiedPrompt)
