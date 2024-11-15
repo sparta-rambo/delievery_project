@@ -1,7 +1,6 @@
 package com.delivery_project.config;
 
 import com.delivery_project.jwt.JwtUtil;
-import com.delivery_project.repository.jpa.UserRepository;
 import com.delivery_project.security.JwtAuthenticationFilter;
 import com.delivery_project.security.JwtAuthorizationFilter;
 import com.delivery_project.security.UserDetailsServiceImpl;
