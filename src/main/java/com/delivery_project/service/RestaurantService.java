@@ -11,6 +11,7 @@ import com.delivery_project.entity.User;
 import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.repository.jpa.CategoryRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
+import com.delivery_project.repository.jpa.UserRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class RestaurantService {
     private final CategoryRepository categoryRepository;
     private final QRestaurant qRestaurant = QRestaurant.restaurant;
 
+    private final UserRepository userRepository;
+
     private Restaurant findRestaurantByIdOrThrow(UUID restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
             .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 가게입니다."));
@@ -49,33 +52,23 @@ public class RestaurantService {
 
     // 권한 검증
     private void validateUserAccess(User user, UUID ownerId) {
-        if (!(user.getId().equals(ownerId) || user.getRole().equals("ROLE_MASTER") || user.getRole()
-            .equals("ROLE_MANAGER"))) {
+        if (!(user.getId().equals(ownerId) || user.getRole().equals(UserRoleEnum.MANAGER) || user.getRole()
+            .equals(UserRoleEnum.MASTER))) {
             throw new BadRequestException("해당 가게에 대한 접근권한이 없습니다.");
         }
     }
 
     public void createRestaurant(RestaurantRequestDto restaurantRequestDto, User user) {
 
-        if (!(user.getRole().equals("ROLE_MASTER")
-            || user.getRole().equals("ROLE_MANAGER"))) {
+        if (!(user.getRole().equals(UserRoleEnum.MANAGER)
+            || user.getRole().equals(UserRoleEnum.MASTER))) {
             throw new BadRequestException("접근권한이 없습니다.");
         }
 
         Category category = findCategoryByIdOrThrow(restaurantRequestDto.getCategoryId());
 
-        // spring security
-//        User owner = userRepository.findById(restaurantRequestDto.getOwnerId())
-//                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
-
-        // 임시 user
-        User owner = new User(
-            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
-            "testUser",
-            "password123",
-            UserRoleEnum.OWNER,
-            false
-        );
+        User owner = userRepository.findById(restaurantRequestDto.getOwnerId())
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
 
         Restaurant restaurant = Restaurant.builder()
             .id(UUID.randomUUID())
