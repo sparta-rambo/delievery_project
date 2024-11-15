@@ -4,13 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
-import lombok.Builder;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
@@ -42,4 +40,14 @@ public abstract class Timestamped {
         this.createdAt = LocalDateTime.now(); // 최초 생성 시점
     }
 
+    // 소프트 삭제 메서드
+    public void delete(String deletedBy) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
+    }
+
+    // 삭제 여부 확인 메서드
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
 }
