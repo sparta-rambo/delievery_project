@@ -107,16 +107,9 @@ public class RestaurantService {
 
         validateUserAccess(user, restaurant.getOwner().getId());
 
-        restaurantRepository.save(
-            Restaurant.builder()
-                .id(restaurantId)
-                .name(restaurant.getName())
-                .category(restaurant.getCategory())
-                .owner(user)
-                .address(restaurant.getAddress())
-                .isHidden(true)
-                .build()
-        );
+        restaurant.markAsDeleted(user.getUsername());
+
+        restaurantRepository.save(restaurant);
     }
 
     @Transactional(readOnly = true)
