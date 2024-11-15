@@ -39,9 +39,9 @@ public class RestaurantController {
         // 임시 user
         User user = new User(
             "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.MANAGER,
-            false // 기본값 또는 원하는 값
+            "password123",
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.createRestaurant(restaurantRequestDto, user);
@@ -55,10 +55,11 @@ public class RestaurantController {
         // 임시 user
         // 임시 user
         User user = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
+            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
+            "testUser",
+            "password123",
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.updateRestaurant(restaurantRequestDto, restaurantId, user);
@@ -70,10 +71,11 @@ public class RestaurantController {
     public ResponseEntity<?> deleteRestaurant(@PathVariable UUID restaurantId) {
         // 임시 user
         User user = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
+            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
+            "testUser",
+            "password123",
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         restaurantService.deleteRestaurant(restaurantId, user);

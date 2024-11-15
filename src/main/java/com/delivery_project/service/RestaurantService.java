@@ -69,10 +69,11 @@ public class RestaurantService {
 
         // 임시 owner
         User owner = new User(
-            "testManager",
-            "1234 Test St, Test City",
-            UserRoleEnum.OWNER,
-            false // 기본값 또는 원하는 값
+            UUID.fromString("12345678-afc5-4164-a7b4-0be4fa6281ed"),
+            "testUser",
+            "password123",
+            UserRoleEnum.CUSTOMER,
+            false
         );
 
         Restaurant restaurant = Restaurant.builder()

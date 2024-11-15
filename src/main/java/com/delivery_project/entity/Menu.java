@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Builder
-public class Menu extends Timestamped{
+public class Menu extends Timestamped {
 
     @Id
     private UUID id;

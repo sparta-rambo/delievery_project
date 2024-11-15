@@ -1,7 +1,7 @@
 package com.delivery_project.security;
 
 import com.delivery_project.entity.User;
-import com.delivery_project.repository.UserRepository;
+import com.delivery_project.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
