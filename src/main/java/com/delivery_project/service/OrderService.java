@@ -10,7 +10,12 @@ import com.delivery_project.repository.jpa.MenuRepository;
 import com.delivery_project.repository.jpa.OrderRepository;
 import com.delivery_project.repository.jpa.RestaurantRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,12 +66,12 @@ public class OrderService {
                 .sum();
     }
 
-    private Map<UUID, Menu> getMenuMapByIds(List<UUID> menuIds) {
+    public Map<UUID, Menu> getMenuMapByIds(List<UUID> menuIds) {
         return menuRepository.findAllById(menuIds).stream()
                 .collect(Collectors.toMap(Menu::getId, menu -> menu));
     }
 
-    private List<UUID> getMenuIdByDtoCreate(OrderRequestDto.Create orderRequestDto) {
+    public List<UUID> getMenuIdByDtoCreate(OrderRequestDto.Create orderRequestDto) {
         return orderRequestDto.getOrderItemRequestDtos().stream()
                 .map(OrderItemRequestDto.Create::getMenuId)
                 .collect(Collectors.toList());
@@ -74,8 +79,10 @@ public class OrderService {
 
     public OrderResponseDto findOrderDetails(UUID orderId) {
         List<Tuple> results = orderRepository.findOrderDetailsTuples(orderId);
+        return convertToOrderResponseDto(results);
+    }
 
-        // 빈 OrderResponseDto를 생성하여 메뉴 정보 누적
+    public OrderResponseDto convertToOrderResponseDto(List<Tuple> results) {
         OrderResponseDto orderResponseDto = results.stream()
                 .findFirst()  // 첫 번째 Tuple에서 기본 주문 정보만 가져오기
                 .map(tuple -> new OrderResponseDto(
@@ -89,7 +96,7 @@ public class OrderService {
                         tuple.get(QOrder.order.deliveryRequest),
                         tuple.get(QOrder.order.status)
                 ))
-                .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+                .orElseThrow(() -> new IllegalArgumentException("Order not found "));
 
         // 각 메뉴 정보를 Map에 추가
         results.forEach(tuple -> {
@@ -100,8 +107,41 @@ public class OrderService {
             );
             orderResponseDto.getOrderItems().put(menuName, menuDetails);  // OrderItems Map에 추가
         });
-
         return orderResponseDto;
+    }
+
+    public Page<OrderResponseDto> getAllOrderDetails(Pageable pageable, String username, String restaurantName, String orderType, String status) {
+        BooleanExpression predicate = createPredicate(username, restaurantName, orderType, status);
+        Page<Tuple> tuplePage = orderRepository.findAllOrderDetails(predicate, pageable);
+        List<OrderResponseDto> orderResponseDtos = tuplePage.getContent().stream()
+                .map(tuple -> convertToOrderResponseDto(List.of(tuple)))
+                .collect(Collectors.toList());
+
+        // `Page<OrderResponseDto>` 생성 및 반환
+        return new PageImpl<>(orderResponseDtos, pageable, tuplePage.getTotalElements());
+    }
+
+    private BooleanExpression createPredicate(String username, String restaurantName, String orderType, String status) {
+        QOrder o = QOrder.order;
+        QUser u = QUser.user;
+        QRestaurant r = QRestaurant.restaurant;
+
+        BooleanExpression predicate = Expressions.asBoolean(true).isTrue();
+
+        if (username != null) {
+            predicate = predicate.and(u.username.eq(username));
+        }
+        if (restaurantName != null) {
+            predicate = predicate.and(r.name.eq(restaurantName));
+        }
+        if (orderType != null) {
+            predicate = predicate.and(o.orderType.eq(orderType));
+        }
+        if (status != null) {
+            predicate = predicate.and(o.status.eq(status));
+        }
+
+        return predicate;
     }
 
 
