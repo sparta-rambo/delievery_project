@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +34,15 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final RestaurantRepository restaurantRepository;
+
+    public Order getOrder(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("주문을 찾을 수 없습니다."));
+    }
+
+    public void deleteOrder(Order order, User user) {
+        order.delete(user.getUsername());
+        orderRepository.save(order);
+    }
 
     public void createOrder(OrderRequestDto.Create orderRequestDto, User user) {
         Restaurant restaurant = restaurantRepository.findById(orderRequestDto.getRestaurantId())

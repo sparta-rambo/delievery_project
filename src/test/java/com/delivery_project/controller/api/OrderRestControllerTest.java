@@ -1,11 +1,12 @@
 package com.delivery_project.controller.api;
 
-import com.delivery_project.config.WebSecurityConfig;
 import com.delivery_project.dto.MenuDetails;
 import com.delivery_project.dto.request.OrderItemRequestDto;
 import com.delivery_project.dto.request.OrderRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.dto.response.OrderResponseDto;
+import com.delivery_project.entity.Order;
+import com.delivery_project.entity.Restaurant;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.OrderStatus;
 import com.delivery_project.enums.SuccessMessage;
@@ -21,11 +22,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
@@ -42,6 +41,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -54,16 +54,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class OrderRestControllerTest {
 
+    User mockUser;
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private OrderService orderService;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    User mockUser;
 
     @BeforeEach
     public void setUp() {
@@ -107,7 +104,7 @@ public class OrderRestControllerTest {
         MessageResponseDto responseDto = new MessageResponseDto("Order" + SuccessMessage.CREATE.getMessage());
 
         // Mocking
-        doNothing().when(orderService).createOrder(Mockito.any(OrderRequestDto.Create.class),  Mockito.eq(mockUser));
+        doNothing().when(orderService).createOrder(Mockito.any(OrderRequestDto.Create.class), Mockito.eq(mockUser));
 
         // when / then: MockMvc 요청
         mockMvc.perform(post("/api/order")
@@ -192,5 +189,44 @@ public class OrderRestControllerTest {
                                 fieldWithPath("orderItems.파스타.price").description("메뉴 '파스타'의 가격")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("주문 삭제 기능")
+    void deleteOrderTest() throws Exception {
+        // given: Mock User 설정
+        OrderRequestDto.Create mockOrderRequestDto = Mockito.mock(OrderRequestDto.Create.class);
+        Restaurant mockRestaurant = Mockito.mock(Restaurant.class);
+
+        // Order 객체 생성
+        Order mockOrder = Order.builder()
+                .orderRequestDto(mockOrderRequestDto) // Mock OrderRequestDto
+                .totalPrice(15000)                   // 예시: 총 가격
+                .restaurant(mockRestaurant)          // Mock Restaurant
+                .user(mockUser)                      // Mock User
+                .build();
+
+        // Mocking 서비스 호출
+        Mockito.when(orderService.getOrder(mockOrder.getId())).thenReturn(mockOrder);
+        doNothing().when(orderService).deleteOrder(Mockito.eq(mockOrder), Mockito.eq(mockUser));
+
+        // when / then: MockMvc 요청 및 검증
+        mockMvc.perform(patch("/api/order/{orderId}", mockOrder.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Order" + SuccessMessage.DELETE.getMessage()))
+                .andDo(document("delete-order",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("orderId").description("삭제할 주문의 고유 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("주문 삭제 성공 메시지")
+                        )
+                ));
+
+        // Verify: 서비스 메서드 호출 검증
+        Mockito.verify(orderService).getOrder(mockOrder.getId());
+        Mockito.verify(orderService).deleteOrder(Mockito.eq(mockOrder), Mockito.eq(mockUser));
     }
 }
