@@ -1,5 +1,6 @@
 package com.delivery_project.controller.api;
 
+import com.delivery_project.common.utils.PageRequestUtils;
 import com.delivery_project.dto.request.OrderRequestDto;
 import com.delivery_project.dto.response.MessageResponseDto;
 import com.delivery_project.dto.response.OrderResponseDto;
@@ -10,6 +11,7 @@ import com.delivery_project.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +56,13 @@ public class OrderRestController {
             @RequestParam(required = false) String restaurantName,
             @RequestParam(required = false) String orderType,
             @RequestParam(required = false) String status,
-            Pageable pageable) {
-        Page<OrderResponseDto> orderDetails = orderService.getAllOrderDetails(pageable, username, restaurantName, orderType, status);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortProperty,
+            @RequestParam(defaultValue = "true") boolean ascending
+            ) {
+        PageRequest pageRequest = PageRequestUtils.getPageRequest(page, size, sortProperty, ascending);
+        Page<OrderResponseDto> orderDetails = orderService.getAllOrderDetails(pageRequest,username, restaurantName, orderType, status);
         return ResponseEntity.ok(orderDetails);
     }
 }

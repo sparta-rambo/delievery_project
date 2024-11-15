@@ -15,6 +15,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,15 +111,15 @@ public class OrderService {
         return orderResponseDto;
     }
 
-    public Page<OrderResponseDto> getAllOrderDetails(Pageable pageable, String username, String restaurantName, String orderType, String status) {
+    public Page<OrderResponseDto> getAllOrderDetails(PageRequest pageRequest, String username, String restaurantName, String orderType, String status) {
         BooleanExpression predicate = createPredicate(username, restaurantName, orderType, status);
-        Page<Tuple> tuplePage = orderRepository.findAllOrderDetails(predicate, pageable);
+        Page<Tuple> tuplePage = orderRepository.findAllOrderDetails(predicate, pageRequest);
         List<OrderResponseDto> orderResponseDtos = tuplePage.getContent().stream()
                 .map(tuple -> convertToOrderResponseDto(List.of(tuple)))
                 .collect(Collectors.toList());
 
         // `Page<OrderResponseDto>` 생성 및 반환
-        return new PageImpl<>(orderResponseDtos, pageable, tuplePage.getTotalElements());
+        return new PageImpl<>(orderResponseDtos, pageRequest, tuplePage.getTotalElements());
     }
 
     private BooleanExpression createPredicate(String username, String restaurantName, String orderType, String status) {

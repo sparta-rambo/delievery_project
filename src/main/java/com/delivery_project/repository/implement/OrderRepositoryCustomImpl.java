@@ -9,6 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -57,7 +58,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    public Page<Tuple> findAllOrderDetails(BooleanExpression predicate, Pageable pageable) {
+    public Page<Tuple> findAllOrderDetails(BooleanExpression predicate, PageRequest pageRequest) {
         QOrder o = QOrder.order;
         QUser u = QUser.user;
         QRestaurant r = QRestaurant.restaurant;
@@ -84,8 +85,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .join(o.restaurant, r)
                 .join(oi.menu, m)
                 .where(predicate)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
                 .fetch();
 
         long total = queryFactory
@@ -94,6 +95,6 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .where(predicate)
                 .fetchCount();
 
-        return new PageImpl<>(results, pageable, total);
+        return new PageImpl<>(results, pageRequest, total);
     }
 }
