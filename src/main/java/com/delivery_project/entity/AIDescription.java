@@ -20,10 +20,18 @@ public class AIDescription extends Timestamped{
     @Id
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String aiRequest;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String aiResponse;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;  // 응답 생성 시간
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }
