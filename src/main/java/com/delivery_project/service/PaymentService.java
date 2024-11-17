@@ -4,6 +4,7 @@ import com.delivery_project.dto.request.PaymentRequestDto;
 import com.delivery_project.dto.response.PaymentResponseDto;
 import com.delivery_project.entity.Order;
 import com.delivery_project.entity.Payment;
+import com.delivery_project.entity.User;
 import com.delivery_project.repository.jpa.OrderRepository;
 import com.delivery_project.repository.jpa.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,12 @@ public class PaymentService {
 
     public PaymentResponseDto getPaymentResponse(UUID paymentId) {
         return paymentRepository.findPaymentResponseDtoByPaymentId(paymentId).orElseThrow(()->new NullPointerException("결제 내역이 존재하지 않습니다."));
+    }
+
+    public void deletePayment(UUID id, User user) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(()->new NullPointerException("결제 내역이 없습니다."));
+        payment.delete(user.getUsername());
+        paymentRepository.save(payment);
     }
 
 }

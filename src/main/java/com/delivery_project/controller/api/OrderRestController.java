@@ -7,6 +7,7 @@ import com.delivery_project.dto.response.OrderResponseDto;
 import com.delivery_project.entity.Order;
 import com.delivery_project.entity.User;
 import com.delivery_project.enums.SuccessMessage;
+import com.delivery_project.security.UserDetailsImpl;
 import com.delivery_project.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -58,9 +59,9 @@ public class OrderRestController {
 
     @PatchMapping("/{orderId}")
     public ResponseEntity<?> deleteOrder(@PathVariable UUID orderId,
-                                         @AuthenticationPrincipal User user) {
+                                         @AuthenticationPrincipal UserDetailsImpl user) {
         Order order = orderService.getOrder(orderId);
-        orderService.deleteOrder(order,user);
+        orderService.deleteOrder(order,user.getUser());
         return ResponseEntity.ok().body(new MessageResponseDto("Order" + SuccessMessage.DELETE.getMessage()));
     }
 }
