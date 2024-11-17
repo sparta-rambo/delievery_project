@@ -35,7 +35,7 @@ public class OrderRestController {
     }
 
     @GetMapping("/{orderId}")
-//    @PreAuthorize("@orderPermissionService.canAccessOrder(#order, #userDetails)")
+//    @PreAuthorize("@permissionHandler.canAccessOrder(#order, #userDetails)")
     public ResponseEntity<?> getOrderById(@PathVariable UUID orderId) {
         OrderResponseDto orderResponseDto = orderService.findOrderDetails(orderId);
         return ResponseEntity.ok().body(orderResponseDto);
@@ -61,7 +61,7 @@ public class OrderRestController {
     public ResponseEntity<?> deleteOrder(@PathVariable UUID orderId,
                                          @AuthenticationPrincipal UserDetailsImpl user) {
         Order order = orderService.getOrder(orderId);
-        orderService.deleteOrder(order,user.getUser());
+        orderService.deleteOrder(order, user.getUser());
         return ResponseEntity.ok().body(new MessageResponseDto("Order" + SuccessMessage.DELETE.getMessage()));
     }
 }
