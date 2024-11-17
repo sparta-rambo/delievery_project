@@ -26,5 +26,8 @@ public class Review extends Timestamped{
     @Column(nullable = false)
     private int rating;
 
+    @Column
+    private String comment;
+
 }
 
