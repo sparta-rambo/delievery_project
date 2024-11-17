@@ -98,12 +98,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             reviewRepository.save(review);
 
-            Payment payment = Payment.builder()
-                    .id(UUID.randomUUID())
-                    .amount(48000)
-                    .order(order)
-                    .paymentMethod("CARD")
-                    .build();
+            Payment payment = new Payment(UUID.randomUUID(),order,48000,"CARD");
             paymentRepository.save(payment);
         }
     }

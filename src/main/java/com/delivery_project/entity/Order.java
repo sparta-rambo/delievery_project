@@ -55,5 +55,12 @@ public class Order extends Timestamped{
         this.totalPrice = totalPrice;
     }
 
+    public void checkedPayment(){
+        this.status = OrderStatus.PAID.getStatus();
+    }
+
+    public void canceledPayment(){
+        this.status = OrderStatus.CANCEL.getStatus();
+    }
 }
 

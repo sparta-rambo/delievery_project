@@ -1,13 +1,12 @@
 package com.delivery_project.entity;
 
+import com.delivery_project.dto.request.PaymentRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
 public class Payment extends Timestamped {
 
     @Id
@@ -30,6 +28,14 @@ public class Payment extends Timestamped {
 
     @Column(nullable = false, length = 50)
     private String paymentMethod;
+
+    @Builder
+    public Payment(PaymentRequestDto.Create paymentRequestDto, Order order) {
+        this.id = UUID.randomUUID();
+        this.order = order;
+        this.amount = paymentRequestDto.getAmount();
+        this.paymentMethod = paymentRequestDto.getPaymentMethod();
+    }
 
 }
 

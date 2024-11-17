@@ -34,6 +34,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final RestaurantRepository restaurantRepository;
+    private final PaymentService paymentService;
 
     public Order getOrder(UUID orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("주문을 찾을 수 없습니다."));
