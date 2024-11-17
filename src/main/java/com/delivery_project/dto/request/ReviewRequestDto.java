@@ -23,4 +23,19 @@ public class ReviewRequestDto {
             this.rating = rating;
         }
     }
+
+    @Getter
+    public static class Update {
+        private String comment;
+
+        @NotNull(message = "별점은 필수 입니다.")
+        @Min(value = 1, message = "별점은 최소 1점입니다.")
+        @Max(value = 5, message = "별점은 최대 5점입니다.")
+        private int rating;
+
+        public Update(String comment, int rating) {
+            this.comment = comment;
+            this.rating = rating;
+        }
+    }
 }
