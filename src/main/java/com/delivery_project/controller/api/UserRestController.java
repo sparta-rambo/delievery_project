@@ -22,9 +22,10 @@ public class UserRestController {
     private UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<MessageResponseDto> signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        return ResponseEntity.ok("Registration Complete");
+        MessageResponseDto responseDto = new MessageResponseDto("Registration Complete");
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{username}")
