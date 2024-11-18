@@ -11,6 +11,7 @@ import com.delivery_project.entity.User;
 import com.delivery_project.enums.OrderStatus;
 import com.delivery_project.enums.SuccessMessage;
 import com.delivery_project.enums.UserRoleEnum;
+import com.delivery_project.security.UserDetailsImpl;
 import com.delivery_project.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -72,9 +74,10 @@ public class OrderRestControllerTest {
                 .role(UserRoleEnum.CUSTOMER)
                 .build();
 
-        // SecurityContext에 Authentication 객체 설정
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(mockUser, null, List.of()));
+        UserDetailsImpl userDetails = new UserDetailsImpl(mockUser);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Test
