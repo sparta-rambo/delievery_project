@@ -70,11 +70,11 @@ public class WebSecurityConfig {
 
                         //주문 생성
                         .requestMatchers(HttpMethod.POST,"/api/order/")
-                        .hasRole(UserRoleEnum.CUSTOMER.getAuthority())
+                        .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority())
 
                         //주문 목록 조회
                         .requestMatchers(HttpMethod.GET,"/api/order/")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
                                 UserRoleEnum.MASTER.getAuthority()
@@ -82,7 +82,7 @@ public class WebSecurityConfig {
 
                         //단일 항목 주문 조회
                         .requestMatchers(HttpMethod.GET,"/api/order/{orderId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -91,7 +91,7 @@ public class WebSecurityConfig {
 
                         //주문 취소
                         .requestMatchers(HttpMethod.PATCH,"/api/order/{orderId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -100,7 +100,7 @@ public class WebSecurityConfig {
 
                         //리뷰 생성
                         .requestMatchers(HttpMethod.POST,"/api/review")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -109,7 +109,7 @@ public class WebSecurityConfig {
 
                         //리뷰 목록 조회
                         .requestMatchers(HttpMethod.GET,"/api/review")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.ANONYMOUS.getAuthority(),
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
@@ -119,7 +119,7 @@ public class WebSecurityConfig {
 
                         //단일 리뷰 조회
                         .requestMatchers(HttpMethod.GET,"/api/review/{reviewId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.ANONYMOUS.getAuthority(),
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
@@ -129,7 +129,7 @@ public class WebSecurityConfig {
 
                         //리뷰 삭제
                         .requestMatchers(HttpMethod.PATCH,"/api/review/{reviewId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -139,11 +139,11 @@ public class WebSecurityConfig {
 
                         //결제 생성
                         .requestMatchers(HttpMethod.POST, "/api/payment/{orderId}")
-                        .hasAnyRole(UserRoleEnum.CUSTOMER.getAuthority())
+                        .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority())
 
                         //결제 단일 항목 조회
                         .requestMatchers(HttpMethod.GET, "/api/payment/{paymentId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -152,7 +152,7 @@ public class WebSecurityConfig {
 
                         //결제 목록 조회
                         .requestMatchers(HttpMethod.GET, "/api/payment")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
@@ -161,7 +161,7 @@ public class WebSecurityConfig {
 
                         //결제 삭제
                         .requestMatchers(HttpMethod.PATCH, "/api/payment/{paymentId}")
-                        .hasAnyRole(
+                        .hasAnyAuthority(
                                 UserRoleEnum.CUSTOMER.getAuthority(),
                                 UserRoleEnum.OWNER.getAuthority(),
                                 UserRoleEnum.MANAGER.getAuthority(),
