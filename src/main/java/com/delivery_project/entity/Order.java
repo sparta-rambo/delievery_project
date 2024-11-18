@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Order extends Timestamped{
+public class Order extends Timestamped {
 
     @Id
     private UUID id;
@@ -44,7 +44,7 @@ public class Order extends Timestamped{
     private String deliveryRequest;
 
     @Builder
-    public Order(OrderRequestDto.Create orderRequestDto,int totalPrice,User user,Restaurant restaurant){
+    public Order(OrderRequestDto.Create orderRequestDto, int totalPrice, User user, Restaurant restaurant) {
         this.id = UUID.randomUUID();
         this.user = user;
         this.restaurant = restaurant;
@@ -55,5 +55,12 @@ public class Order extends Timestamped{
         this.totalPrice = totalPrice;
     }
 
+    public void checkedPayment() {
+        this.status = OrderStatus.PAID.getStatus();
+    }
+
+    public void canceledPayment() {
+        this.status = OrderStatus.CANCEL.getStatus();
+    }
 }
 
