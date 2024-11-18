@@ -26,8 +26,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
-        if(userRepository.count()==0){
+    public void run(String... args) {
+        if (userRepository.count() == 0) {
             User user = User.builder()
                     .id(UUID.randomUUID())
                     .address("서울특별시 노원구")
@@ -37,7 +37,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             userRepository.save(user);
 
-            Category category =Category.builder()
+            Category category = Category.builder()
                     .id(UUID.randomUUID())
                     .name("치킨")
                     .build();
@@ -73,7 +73,7 @@ public class DataInitializer implements CommandLineRunner {
             menuRepository.save(menu1);
             menuRepository.save(menu2);
 
-            Order order = new Order(UUID.fromString("54661171-6767-433e-bb0f-d5295056872c"),user,restaurant,"온라인",OrderStatus.CONFIRM.getStatus(), 48000,"서울특별시 노원구","문앞에 놓아주세요");
+            Order order = new Order(UUID.fromString("54661171-6767-433e-bb0f-d5295056872c"), user, restaurant, "온라인", OrderStatus.CONFIRM.getStatus(), 48000, "서울특별시 노원구", "문앞에 놓아주세요");
             orderRepository.save(order);
 
             OrderItem orderItem1 = OrderItem.builder()
@@ -99,12 +99,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             reviewRepository.save(review);
 
-            Payment payment = Payment.builder()
-                    .id(UUID.randomUUID())
-                    .amount(48000)
-                    .order(order)
-                    .paymentMethod("CARD")
-                    .build();
+            Payment payment = new Payment(UUID.randomUUID(), order, 48000, "CARD");
             paymentRepository.save(payment);
         }
     }

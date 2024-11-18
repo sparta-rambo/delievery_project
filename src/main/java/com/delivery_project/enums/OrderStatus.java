@@ -9,6 +9,7 @@ public enum OrderStatus {
 
     CANCEL("취소"),
     CONFIRM("주문 조회 중"),
+    PAID("결제 완료"),
     DELIVERY("배달 중"),
     FINISHED("배달 완료");
 
