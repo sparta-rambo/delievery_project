@@ -62,7 +62,11 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.POST, "/api/user/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/{username}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/{username}").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/{username}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/ai").permitAll()
 
                         //주문 생성
                         .requestMatchers(HttpMethod.POST,"/api/order/")
@@ -164,7 +168,7 @@ public class WebSecurityConfig {
                                 UserRoleEnum.MASTER.getAuthority()
                         )
 
-                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                       
                         .requestMatchers(HttpMethod.GET, "/api/menus/{restaurantId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
