@@ -34,7 +34,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -57,7 +58,7 @@ public class WebSecurityConfig {
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
@@ -95,6 +96,13 @@ public class WebSecurityConfig {
                                 UserRoleEnum.MASTER.getAuthority()
                         )
 
+                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.GET, "/api/menus/{restaurantId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants/{restaurantId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants/category/{categoryId}").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
