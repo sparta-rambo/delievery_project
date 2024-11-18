@@ -34,8 +34,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -58,12 +57,81 @@ public class WebSecurityConfig {
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
-            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+
+                        //주문 생성
+                        .requestMatchers(HttpMethod.POST,"/api/order/")
+                        .hasRole(UserRoleEnum.CUSTOMER.getAuthority())
+
+                        //주문 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/")
+                        .hasAnyRole(
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 항목 주문 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //주문 취소
+                        .requestMatchers(HttpMethod.PATCH,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 생성
+                        .requestMatchers(HttpMethod.POST,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 리뷰 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 삭제
+                        .requestMatchers(HttpMethod.PATCH,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
 
                         //결제 생성
                         .requestMatchers(HttpMethod.POST, "/api/payment/{orderId}")

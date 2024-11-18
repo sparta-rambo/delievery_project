@@ -95,6 +95,7 @@ public class DataInitializer implements CommandLineRunner {
                     .id(UUID.randomUUID())
                     .order(order)
                     .rating(5)
+                    .comment("맛있었습니다.")
                     .build();
             reviewRepository.save(review);
 
