@@ -1,5 +1,6 @@
 package com.delivery_project.config;
 
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.jwt.JwtUtil;
 import com.delivery_project.security.JwtAuthenticationFilter;
 import com.delivery_project.security.JwtAuthorizationFilter;
@@ -7,6 +8,7 @@ import com.delivery_project.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -61,6 +63,75 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+
+                        //주문 생성
+                        .requestMatchers(HttpMethod.POST,"/api/order/")
+                        .hasRole(UserRoleEnum.CUSTOMER.getAuthority())
+
+                        //주문 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/")
+                        .hasAnyRole(
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 항목 주문 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //주문 취소
+                        .requestMatchers(HttpMethod.PATCH,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 생성
+                        .requestMatchers(HttpMethod.POST,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 리뷰 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 삭제
+                        .requestMatchers(HttpMethod.PATCH,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
