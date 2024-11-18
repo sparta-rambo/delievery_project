@@ -26,5 +26,13 @@ public class Review extends Timestamped{
     @Column(nullable = false)
     private int rating;
 
+    @Column
+    private String comment;
+
+    public void update(int rating, String comment) {
+        this.rating = rating;
+        this.comment = comment;
+    }
+
 }
 

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserRoleEnum {
+    ANONYMOUS(Authority.ANONYMOUS),
     CUSTOMER(Authority.CUSTOMER),
     OWNER(Authority.OWNER),
     MANAGER(Authority.MANAGER),
@@ -18,6 +19,7 @@ public enum UserRoleEnum {
     }
 
     public static class Authority {
+        public static final String ANONYMOUS = "ROLE_ANONYMOUS";
         public static final String CUSTOMER = "ROLE_CUSTOMER";
         public static final String OWNER = "ROLE_OWNER";
         public static final String MANAGER = "ROLE_MANAGER";

@@ -1,5 +1,6 @@
 package com.delivery_project.config;
 
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.jwt.JwtUtil;
 import com.delivery_project.security.JwtAuthenticationFilter;
 import com.delivery_project.security.JwtAuthorizationFilter;
@@ -66,6 +67,114 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/user/{username}").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/user/{username}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/ai").permitAll()
+
+                        //주문 생성
+                        .requestMatchers(HttpMethod.POST,"/api/order/")
+                        .hasRole(UserRoleEnum.CUSTOMER.getAuthority())
+
+                        //주문 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/")
+                        .hasAnyRole(
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 항목 주문 조회
+                        .requestMatchers(HttpMethod.GET,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //주문 취소
+                        .requestMatchers(HttpMethod.PATCH,"/api/order/{orderId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 생성
+                        .requestMatchers(HttpMethod.POST,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 목록 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //단일 리뷰 조회
+                        .requestMatchers(HttpMethod.GET,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.ANONYMOUS.getAuthority(),
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //리뷰 삭제
+                        .requestMatchers(HttpMethod.PATCH,"/api/review/{reviewId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+
+                        //결제 생성
+                        .requestMatchers(HttpMethod.POST, "/api/payment/{orderId}")
+                        .hasAnyRole(UserRoleEnum.CUSTOMER.getAuthority())
+
+                        //결제 단일 항목 조회
+                        .requestMatchers(HttpMethod.GET, "/api/payment/{paymentId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //결제 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/api/payment")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //결제 삭제
+                        .requestMatchers(HttpMethod.PATCH, "/api/payment/{paymentId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                       
+                        .requestMatchers(HttpMethod.GET, "/api/menus/{restaurantId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants/{restaurantId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurants/category/{categoryId}").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
