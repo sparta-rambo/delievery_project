@@ -63,6 +63,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                .requestMatchers(HttpMethod.GET, "/api/category").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/restaurants/{restaurantId}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/restaurants").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/restaurants/category/{categoryId}").permitAll()
