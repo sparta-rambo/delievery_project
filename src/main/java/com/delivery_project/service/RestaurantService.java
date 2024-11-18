@@ -107,16 +107,9 @@ public class RestaurantService {
 
         validateUserAccess(user, restaurant.getOwner().getId());
 
-        restaurantRepository.save(
-            Restaurant.builder()
-                .id(restaurantId)
-                .name(restaurant.getName())
-                .category(restaurant.getCategory())
-                .owner(user)
-                .address(restaurant.getAddress())
-                .isHidden(true)
-                .build()
-        );
+        restaurant.markAsDeleted(user.getUsername());
+
+        restaurantRepository.save(restaurant);
     }
 
     @Transactional(readOnly = true)
@@ -164,9 +157,16 @@ public class RestaurantService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RestaurantResponseDto> getRestaurantsByCategory(PageRequest pageRequest, UUID categoryId) {
+    public Page<RestaurantResponseDto> getRestaurantsByCategory(PageRequest pageRequest, UUID categoryId, String search) {
         // Querydsl로 조건을 생성 (카테고리에 해당하는 가게 조회)
         BooleanExpression predicate = qRestaurant.category.id.eq(categoryId);
+
+        predicate = predicate.and(qRestaurant.isHidden.isFalse());
+
+        // 검색 조건이 있는 경우
+        if (search != null && !search.isEmpty()) {
+            predicate = predicate.and(qRestaurant.name.containsIgnoreCase(search));
+        }
 
         // Querydsl 페이징 적용
         List<Restaurant> restaurants = restaurantRepository.findRestaurants(predicate, pageRequest);
