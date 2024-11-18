@@ -1,5 +1,6 @@
 package com.delivery_project.config;
 
+import com.delivery_project.enums.UserRoleEnum;
 import com.delivery_project.jwt.JwtUtil;
 import com.delivery_project.security.JwtAuthenticationFilter;
 import com.delivery_project.security.JwtAuthorizationFilter;
@@ -7,6 +8,7 @@ import com.delivery_project.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -61,6 +63,38 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+
+                        //결제 생성
+                        .requestMatchers(HttpMethod.POST, "/api/payment/{orderId}")
+                        .hasAnyRole(UserRoleEnum.CUSTOMER.getAuthority())
+
+                        //결제 단일 항목 조회
+                        .requestMatchers(HttpMethod.GET, "/api/payment/{paymentId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //결제 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/api/payment")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
+                        //결제 삭제
+                        .requestMatchers(HttpMethod.PATCH, "/api/payment/{paymentId}")
+                        .hasAnyRole(
+                                UserRoleEnum.CUSTOMER.getAuthority(),
+                                UserRoleEnum.OWNER.getAuthority(),
+                                UserRoleEnum.MANAGER.getAuthority(),
+                                UserRoleEnum.MASTER.getAuthority()
+                        )
+
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
